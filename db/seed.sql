@@ -9,17 +9,18 @@ INSERT INTO regions (name) VALUES
 INSERT INTO categories (name) VALUES
   ('Mezze'), ('Grills'), ('Seafood'), ('Stews'), ('Desserts'), ('Bakery');        -- ids 1 to 6
 
-INSERT INTO dishes (name_en, name_ar, description, category_id, is_vegetarian) VALUES
-  ('Hummus',        'حمص',         'Chickpea purée with tahini, lemon and garlic, served with olive oil.', 1, TRUE),
-  ('Tabbouleh',     'تبولة',        'Parsley salad with bulgur, tomato, mint, lemon and olive oil.', 1, TRUE),
-  ('Fattoush',      'فتوش',         'Mixed salad with toasted bread, sumac and pomegranate molasses.', 1, TRUE),
-  ('Baba Ghanouj',  'بابا غنوج',    'Smoky grilled eggplant dip with tahini and lemon.', 1, TRUE),
-  ('Kibbeh Nayeh',  'كبة نية',      'Raw lamb with fine bulgur and spices, served with olive oil and mint.', 1, FALSE),
-  ('Shish Taouk',   'شيش طاووق',    'Grilled chicken skewers marinated in garlic, lemon and yogurt.', 2, FALSE),
-  ('Sayadieh',      'صيادية',       'Fish on caramelised-onion rice, topped with toasted nuts.', 3, FALSE),
-  ('Mloukhieh',     'ملوخية',       'Jute leaf stew with chicken, served over rice.', 4, FALSE),
-  ('Knefeh',        'كنافة',        'Warm cheese pastry soaked in sugar syrup, often eaten in a sesame bun.', 5, TRUE),
-  ('Manoushe Zaatar', 'منقوشة زعتر', 'Flatbread baked with thyme, sesame and olive oil.', 6, TRUE);    -- ids 1 to 10
+-- weather: 'hot' = good on hot days, 'cold' = good on cold days, 'any' = all year
+INSERT INTO dishes (name_en, name_ar, description, category_id, is_vegetarian, weather) VALUES
+  ('Hummus',        'حمص',         'Chickpea purée with tahini, lemon and garlic, served with olive oil.', 1, TRUE, 'any'),
+  ('Tabbouleh',     'تبولة',        'Parsley salad with bulgur, tomato, mint, lemon and olive oil.', 1, TRUE, 'hot'),
+  ('Fattoush',      'فتوش',         'Mixed salad with toasted bread, sumac and pomegranate molasses.', 1, TRUE, 'hot'),
+  ('Baba Ghanouj',  'بابا غنوج',    'Smoky grilled eggplant dip with tahini and lemon.', 1, TRUE, 'any'),
+  ('Kibbeh Nayeh',  'كبة نية',      'Raw lamb with fine bulgur and spices, served with olive oil and mint.', 1, FALSE, 'any'),
+  ('Shish Taouk',   'شيش طاووق',    'Grilled chicken skewers marinated in garlic, lemon and yogurt.', 2, FALSE, 'any'),
+  ('Sayadieh',      'صيادية',       'Fish on caramelised-onion rice, topped with toasted nuts.', 3, FALSE, 'cold'),
+  ('Mloukhieh',     'ملوخية',       'Jute leaf stew with chicken, served over rice.', 4, FALSE, 'cold'),
+  ('Knefeh',        'كنافة',        'Warm cheese pastry soaked in sugar syrup, often eaten in a sesame bun.', 5, TRUE, 'cold'),
+  ('Manoushe Zaatar', 'منقوشة زعتر', 'Flatbread baked with thyme, sesame and olive oil.', 6, TRUE, 'any');    -- ids 1 to 10
 
 INSERT INTO restaurants (name, region_id, address, phone, lat, lng, price_level, style) VALUES
   ('Teta''s Table',          1, 'Gemmayzeh, Beirut',        '01 000 001', 33.8959, 35.5164, 2, 'authentic'),

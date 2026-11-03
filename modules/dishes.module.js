@@ -29,10 +29,10 @@ async function findById(id) {
 // inserts a dish and returns it with its new id
 async function create(dish) {
   const { rows } = await pool.query(
-    `INSERT INTO dishes (name_en, name_ar, description, category_id, is_vegetarian)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO dishes (name_en, name_ar, description, category_id, is_vegetarian, weather)
+     VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
-    [dish.name_en, dish.name_ar, dish.description, dish.category_id, dish.is_vegetarian]
+    [dish.name_en, dish.name_ar, dish.description, dish.category_id, dish.is_vegetarian, dish.weather]
   );
   return rows[0];
 }
@@ -41,10 +41,10 @@ async function create(dish) {
 async function replace(id, dish) {
   const { rows } = await pool.query(
     `UPDATE dishes
-     SET name_en = $1, name_ar = $2, description = $3, category_id = $4, is_vegetarian = $5
-     WHERE id = $6
+     SET name_en = $1, name_ar = $2, description = $3, category_id = $4, is_vegetarian = $5, weather = $6
+     WHERE id = $7
      RETURNING *`,
-    [dish.name_en, dish.name_ar, dish.description, dish.category_id, dish.is_vegetarian, id]
+    [dish.name_en, dish.name_ar, dish.description, dish.category_id, dish.is_vegetarian, dish.weather, id]
   );
   return rows[0];
 }

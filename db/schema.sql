@@ -43,7 +43,8 @@ CREATE TABLE dishes (
   name_ar       VARCHAR(100),
   description   TEXT,
   category_id   INTEGER NOT NULL REFERENCES categories(id),
-  is_vegetarian BOOLEAN NOT NULL DEFAULT FALSE
+  is_vegetarian BOOLEAN NOT NULL DEFAULT FALSE,
+  weather       VARCHAR(10) NOT NULL DEFAULT 'any' CHECK (weather IN ('hot', 'cold', 'any'))  -- the weather the dish suits, used by dish-of-the-day
 );
 
 -- many-to-many between restaurants and dishes, with the price
@@ -63,6 +64,7 @@ CREATE TABLE reviews (
   tradition_rating SMALLINT NOT NULL CHECK (tradition_rating BETWEEN 1 AND 5),  -- 1 very modern, 5 very traditional
   comment          VARCHAR(1000),
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at       TIMESTAMPTZ,                       -- null until the review is edited
   UNIQUE (user_id, restaurant_id)                   -- one review per user per restaurant
 );
 
@@ -76,6 +78,7 @@ CREATE TABLE chat_logs (
   id              SERIAL PRIMARY KEY,
   user_id         INTEGER REFERENCES users(id) ON DELETE SET NULL,    -- null for visitors
   question        VARCHAR(500) NOT NULL,
+  answer          TEXT NOT NULL,                                      -- what the chatbot replied
   matched_dish_id INTEGER REFERENCES dishes(id) ON DELETE SET NULL,   -- null if no dish matched
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

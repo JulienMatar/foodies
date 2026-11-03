@@ -1,11 +1,14 @@
 // checks the body of a dish request (POST, PUT): every field must be sent
 
+const WEATHERS = ['hot', 'cold', 'any'];
+
 const RULES = {
   name_en: { check: (v) => typeof v === 'string' && v.trim() !== '', message: 'name_en must be a non-empty string' },
   name_ar: { check: (v) => typeof v === 'string', message: 'name_ar must be a string' },
   description: { check: (v) => typeof v === 'string', message: 'description must be a string' },
   category_id: { check: (v) => Number.isInteger(v) && v > 0, message: 'category_id must be a positive integer' },
   is_vegetarian: { check: (v) => typeof v === 'boolean', message: 'is_vegetarian must be true or false' },
+  weather: { check: (v) => WEATHERS.includes(v), message: 'weather must be hot, cold or any' },
 };
 
 function validateDish(req, res, next) {

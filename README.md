@@ -38,7 +38,7 @@ Web Programming 1 project by Julien Matar, Peter Nehmeh and Freddy Rayess.
 |---|---|---|
 | GET | `/api/dishes` | all dishes |
 | GET | `/api/dishes/:id` | one dish |
-| POST | `/api/dishes` | create a dish `{ name_en, name_ar, description, category_id, is_vegetarian }` |
+| POST | `/api/dishes` | create a dish `{ name_en, name_ar, description, category_id, is_vegetarian, weather }` |
 | PUT | `/api/dishes/:id` | replace a dish (same body) |
 | DELETE | `/api/dishes/:id` | delete a dish |
 | GET | `/api/restaurants` | all restaurants |
