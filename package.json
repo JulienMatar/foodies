@@ -1,0 +1,17 @@
+{
+  "name": "foodies",
+  "version": "1.0.0",
+  "description": "Foodies: find traditional Lebanese dishes and the restaurants that serve them",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "Julien Matar, Peter Nehmeh, Freddy Rayess",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
+  }
+}
