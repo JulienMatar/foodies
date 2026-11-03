@@ -2,6 +2,7 @@ const express = require('express');
 
 // middlewares
 const logger = require('./middlewares/logger');
+const errorHandler = require('./middlewares/errorHandler');
 
 // routes
 const dishesRoutes = require('./routes/dishes.routes');
@@ -25,5 +26,8 @@ app.use('/api/categories', categoriesRoutes);
 app.use((req, res) => {
   res.status(404).json({ error: 'Page Not found' });
 });
+
+// must be last: catches the errors of all the routes above
+app.use(errorHandler);
 
 module.exports = app;

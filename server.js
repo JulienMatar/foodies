@@ -5,7 +5,7 @@ const { once } = require('events');
 const app = require('./app');
 const pool = require('./modules/db');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4040;
 
 // checks that PostgreSQL answers, then starts the server.
 // once() waits for the 'listening' event; if 'error' fires first
