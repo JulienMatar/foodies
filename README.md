@@ -32,7 +32,7 @@ Web Programming 1 project by Julien Matar, Peter Nehmeh and Freddy Rayess.
 | `modules/` | the SQL queries (`db.js` is the shared connection pool) |
 | `utils/` | `helper1` login cookie (JWT), `helper2` weather (Open-Meteo), `helper3` exchange rates |
 | `db/` | `schema.sql`, `seed.sql`, and `foodies.dbml` (the ER diagram: paste it into https://dbdiagram.io to view it) |
-| `docs/` | the ER diagram (`Foodies_ER_Diagram`) and the list of every endpoint (`Foodies_Endpoints`), as PDF and PNG |
+| `project_design/` | the ER diagram (`Foodies_ER_Diagram`) and the list of every endpoint (`Foodies_Endpoints`), as PDF and PNG |
 | `view/` | the website (HTML, CSS and JavaScript pages, served by Express) |
 
 ## Website pages (`view/`)
@@ -125,5 +125,5 @@ With `?dish=`, only the restaurants where that dish is available are listed, wit
 Not built yet: the chatbot (`POST /api/chat`, `GET /api/admin/chat-logs`).
 
 Errors are always JSON: `{ "error": "message" }`.
-The full API (32 endpoints, 30 built, the 2 chatbot ones planned) is in `docs/Foodies_Endpoints.pdf`,
-and the database design in `docs/Foodies_ER_Diagram.pdf` (it matches `db/schema.sql` and `db/foodies.dbml`).
+The full API (32 endpoints, 30 built, the 2 chatbot ones planned) is in `project_design/Foodies_Endpoints.pdf`,
+and the database design in `project_design/Foodies_ER_Diagram.pdf` (it matches `db/schema.sql` and `db/foodies.dbml`).
