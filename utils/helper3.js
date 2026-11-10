@@ -5,10 +5,13 @@
 
 const CACHE_MS = 60 * 60 * 1000;
 
+// used only if the API cannot be reached and we have no rates yet (approximate, 2026)
+const FALLBACK = { USD: 1, LBP: 89500, EUR: 0.92 };
+
 let cached = null;
 let cachedAt = 0;
 
-// returns { USD: 1, LBP, EUR, updated_at }
+// returns { USD: 1, LBP, EUR, updated_at } (+ estimated: true when the API was down and nothing was saved)
 async function getRates() {
   if (cached && Date.now() - cachedAt < CACHE_MS) return cached;
 
@@ -26,9 +29,10 @@ async function getRates() {
     cachedAt = Date.now();
     return cached;
   } catch (err) {
-    // the API is down: old rates are better than no rates
+    // the API is down: old rates are better than no rates, and estimated rates are better than an error
+    console.error('Rates API unavailable:', err.message);
     if (cached) return cached;
-    throw err;
+    return { ...FALLBACK, updated_at: null, estimated: true };
   }
 }
 

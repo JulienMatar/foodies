@@ -32,7 +32,8 @@ Web Programming 1 project by Julien Matar, Peter Nehmeh and Freddy Rayess.
 | `modules/` | the SQL queries (`db.js` is the shared connection pool) |
 | `utils/` | `helper1` login cookie (JWT), `helper2` weather (Open-Meteo), `helper3` exchange rates |
 | `db/` | `schema.sql`, `seed.sql`, and `foodies.dbml` (the ER diagram: paste it into https://dbdiagram.io to view it) |
-| `project_design/` | ER diagram and the list of all planned endpoints |
+| `docs/` | the ER diagram (`Foodies_ER_Diagram`) and the list of every endpoint (`Foodies_Endpoints`), as PDF and PNG |
+| `view/` | the website (HTML, CSS and JavaScript pages, served by Express) |
 
 ## Website pages (`view/`)
 
@@ -116,7 +117,7 @@ Access: Public = no login, User = logged in, Owner = the author of the review, A
 | GET | `/api/regions` | Public | list regions |
 | GET | `/api/categories` | Public | list dish categories |
 | GET | `/api/dish-of-the-day` | Public | a dish that suits today's weather in Beirut (Open-Meteo) |
-| GET | `/api/rates` | Public | 1 USD in LBP and EUR (cached 1 hour) |
+| GET | `/api/rates` | Public | 1 USD in LBP and EUR (cached 1 hour; if the rates service is down: the last rates, or estimated ones with `"estimated": true`) |
 
 `sort` values: `authentic`, `mix` (fusion first), `modern`, `price_asc`, `price_desc`, `top_rated`.
 With `?dish=`, only the restaurants where that dish is available are listed, with its `price_usd`, and the price sorts use it.
@@ -124,4 +125,5 @@ With `?dish=`, only the restaurants where that dish is available are listed, wit
 Not built yet: the chatbot (`POST /api/chat`, `GET /api/admin/chat-logs`).
 
 Errors are always JSON: `{ "error": "message" }`.
-The full planned API (32 endpoints) is in `project_design/Foodies_Endpoints.pdf`.
+The full API (32 endpoints, 30 built, the 2 chatbot ones planned) is in `docs/Foodies_Endpoints.pdf`,
+and the database design in `docs/Foodies_ER_Diagram.pdf` (it matches `db/schema.sql` and `db/foodies.dbml`).
