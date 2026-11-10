@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ask Teta · Foodies</title>
+  <meta name="theme-color" content="#14120F">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314120F'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F4B740'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=Reem+Kufi:wght@700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/chat.js"></script>
+</head>
+<body class="chat-body">
+  <div class="chat-page">
+    <header class="chat-head">
+      <a class="icon-btn" href="index.html" aria-label="Back to home">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <div class="avatar" lang="ar" dir="rtl" aria-hidden="true">تيتا</div>
+      <div>
+        <h1>Ask Teta</h1>
+        <p class="status"><span class="live-dot" aria-hidden="true"></span>Online · knows every mezze in Lebanon</p>
+      </div>
+    </header>
+
+    <main class="thread" id="thread" role="log" aria-live="polite" aria-label="Conversation with Teta">
+      <p class="day">Today</p>
+    </main>
+
+    <div class="composer">
+      <div class="suggestions" id="suggestions" role="group" aria-label="Suggested questions"></div>
+      <form class="chat-form" id="chatForm">
+        <label class="sr-only" for="msg">Ask Teta a question</label>
+        <input id="msg" type="text" placeholder="Ask about a dish or a region…" autocomplete="off" maxlength="500">
+        <button class="send" id="send" type="submit" aria-label="Send">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10.5 13.5"/><path d="M21 3 14.5 21l-4-7.5L3 9.5z"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

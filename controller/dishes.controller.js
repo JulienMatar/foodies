@@ -1,14 +1,18 @@
 const dishesModule = require('../modules/dishes.module');
 
+// GET /api/dishes?search=&category=&vegetarian=  (req.filters comes from validateDishFilters)
 async function getAll(req, res) {
-  const dishes = await dishesModule.findAll();
+  const dishes = await dishesModule.findAll(req.filters);
   res.json(dishes);
 }
 
+// GET /api/dishes/:id -- the dish + the restaurants serving it and their prices
 async function getById(req, res) {
   const dish = await dishesModule.findById(req.validatedId);
   if (!dish) return res.status(404).json({ error: 'Dish not found' });
-  res.json(dish);
+
+  const restaurants = await dishesModule.findRestaurantsServing(dish.id);
+  res.json({ ...dish, restaurants });
 }
 
 async function createDish(req, res) {

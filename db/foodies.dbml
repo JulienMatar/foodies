@@ -1,0 +1,172 @@
+// Foodies database: the same 9 tables as db/schema.sql, written in DBML.
+// Paste this file into https://dbdiagram.io (or any DBML viewer) to see the ER diagram.
+// If you change schema.sql, change this file too.
+
+Project foodies {
+  database_type: 'PostgreSQL'
+  Note: 'Find traditional Lebanese dishes and the restaurants that serve them. Web Programming 1: Julien Matar, Peter Nehmeh, Freddy Rayess.'
+}
+
+// ---------- people ----------
+
+Table users {
+  id            serial       [pk]
+  name          varchar(100) [not null]
+  email         varchar(255) [not null, unique, note: 'saved in lowercase by the API']
+  password_hash varchar(255) [note: 'bcrypt hash; null for Google-only accounts']
+  google_id     varchar(255) [unique, note: 'null unless the user signed in with Google']
+  role          varchar(10)  [not null, default: 'user', note: "'user' or 'admin'"]
+  created_at    timestamptz  [not null, default: `now()`]
+
+  Note: 'Every account needs a password_hash or a google_id (CHECK constraint).'
+}
+
+// ---------- lookups ----------
+
+Table regions {
+  id   serial      [pk]
+  name varchar(50) [not null, unique]
+}
+
+Table categories {
+  id   serial      [pk]
+  name varchar(50) [not null, unique]
+}
+
+// ---------- catalog ----------
+
+Table restaurants {
+  id          serial           [pk]
+  name        varchar(100)     [not null]
+  region_id   integer          [not null]
+  address     varchar(200)
+  phone       varchar(30)
+  lat         "double precision" [note: '-90 to 90']
+  lng         "double precision" [note: '-180 to 180']
+  price_level smallint         [not null, note: '1 to 4']
+  style       varchar(10)      [not null, note: "'heritage', 'authentic', 'fusion' or 'modern'"]
+
+  indexes {
+    region_id [name: 'idx_restaurants_region']
+  }
+}
+
+Table dishes {
+  id             serial       [pk]
+  slug           varchar(40)  [unique, note: 'photo file: view/img/photos/dishes/<slug>.jpg']
+  name_en        varchar(100) [not null]
+  name_ar        varchar(100) [note: 'Arabic name']
+  description    text
+  category_id    integer      [not null]
+  weather        varchar(10)  [not null, default: 'any', note: "'hot', 'cold' or 'any': used by dish-of-the-day"]
+  ingredients    "text[]"     [not null, default: `'{}'`]
+  is_vegetarian  boolean      [not null, default: false]
+  is_vegan       boolean      [not null, default: false, note: 'no animal products (siyami); vegan implies vegetarian']
+  is_gluten_free boolean      [not null, default: false, note: 'as usually served']
+  allergens      "text[]"     [not null, default: `'{}'`, note: 'only gluten, dairy, nuts, sesame, fish, eggs']
+  meat           varchar(10)  [not null, default: 'none', note: "'none', 'lamb', 'beef', 'chicken' or 'fish'; 'none' when vegetarian"]
+  served_raw     boolean      [not null, default: false, note: 'raw meat or fish, e.g. kibbeh nayeh']
+  good_to_know   text         [note: 'how it is eaten, a tip for first-timers']
+  first_timer    boolean      [not null, default: false, note: 'shown in "New to Lebanese food?"']
+
+  indexes {
+    category_id [name: 'idx_dishes_category']
+  }
+}
+
+Table restaurant_dishes {
+  restaurant_id integer       [not null]
+  dish_id       integer       [not null]
+  price_usd     numeric(8, 2) [not null, note: '0 or more']
+  available     boolean       [not null, default: true]
+
+  indexes {
+    (restaurant_id, dish_id) [pk]
+    dish_id [name: 'idx_restaurant_dishes_dish']
+  }
+
+  Note: 'The menu: which restaurant serves which dish, and at what price (many-to-many).'
+}
+
+// ---------- what users write ----------
+
+Table reviews {
+  id               serial        [pk]
+  user_id          integer       [not null]
+  restaurant_id    integer       [not null]
+  rating           smallint      [not null, note: '1 to 5']
+  tradition_rating smallint      [not null, note: '1 very modern to 5 very traditional']
+  comment          varchar(1000)
+  created_at       timestamptz   [not null, default: `now()`]
+  updated_at       timestamptz   [note: 'null until the review is edited']
+
+  indexes {
+    (user_id, restaurant_id) [unique, note: 'one review per user per restaurant']
+    restaurant_id [name: 'idx_reviews_restaurant']
+  }
+}
+
+Table favorites {
+  user_id    integer     [not null]
+  dish_id    integer     [not null]
+  created_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (user_id, dish_id) [pk]
+    dish_id [name: 'idx_favorites_dish']
+  }
+
+  Note: 'The dishes a user saved (many-to-many).'
+}
+
+// ---------- chatbot ----------
+
+Table chat_logs {
+  id              serial       [pk]
+  user_id         integer      [note: 'null for visitors']
+  question        varchar(500) [not null]
+  answer          text         [not null]
+  matched_dish_id integer      [note: 'null if no dish matched']
+  created_at      timestamptz  [not null, default: `now()`]
+
+  indexes {
+    created_at [name: 'idx_chat_logs_created']
+  }
+}
+
+// ---------- relationships (many > one) ----------
+
+Ref: restaurants.region_id > regions.id
+Ref: dishes.category_id > categories.id
+
+Ref: restaurant_dishes.restaurant_id > restaurants.id [delete: cascade]
+Ref: restaurant_dishes.dish_id > dishes.id [delete: cascade]
+
+Ref: reviews.user_id > users.id [delete: cascade]
+Ref: reviews.restaurant_id > restaurants.id [delete: cascade]
+
+Ref: favorites.user_id > users.id [delete: cascade]
+Ref: favorites.dish_id > dishes.id [delete: cascade]
+
+Ref: chat_logs.user_id > users.id [delete: set null]
+Ref: chat_logs.matched_dish_id > dishes.id [delete: set null]
+
+// ---------- groups (dbdiagram.io draws a box around each) ----------
+
+TableGroup catalog {
+  regions
+  categories
+  restaurants
+  dishes
+  restaurant_dishes
+}
+
+TableGroup people {
+  users
+  reviews
+  favorites
+}
+
+TableGroup chatbot {
+  chat_logs
+}

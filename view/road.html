@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The food road trip · Foodies</title>
+  <meta name="description" content="Six Lebanese towns from the coast to the Beqaa, and the plate to order in each.">
+  <meta name="theme-color" content="#2E4B36">
+  <link rel="icon" href="img/cedar.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&family=Aref+Ruqaa:wght@700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/road.js"></script>
+</head>
+<body>
+  <a class="sr-only" href="#main">Skip to content</a>
+
+  <p class="topline">Ahla w sahla<span class="ar" lang="ar" dir="rtl">أهلا وسهلا</span>welcome to the Lebanese table</p>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html" aria-label="Foodies home">foodies<span class="dot">.</span><span class="ar" lang="ar" dir="rtl" aria-hidden="true">فوديز</span></a>
+      <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="nav-panel" id="navPanel">
+        <nav aria-label="Main">
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="new.html">New here?</a></li>
+            <li><a href="dishes.html">Dishes</a></li>
+            <li><a href="road.html" aria-current="page">Road trip</a></li>
+            <li><a href="restaurants.html">Restaurants</a></li>
+            <li><a href="traditions.html">Traditions</a></li>
+          </ul>
+        </nav>
+        <div class="seg" role="group" aria-label="Currency">
+          <button type="button" data-cur="USD" aria-pressed="true">USD</button>
+          <button type="button" data-cur="LBP" aria-pressed="false">LBP</button>
+          <button type="button" data-cur="EUR" aria-pressed="false">EUR</button>
+        </div>
+        <div class="account" id="account">
+          <button class="btn btn-ghost btn-sm" type="button" data-signin>Sign in</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- the Baalbek lithograph comes in from the left, the road runs in front of it -->
+    <section class="road-scene" aria-labelledby="roadTitle">
+      <img class="road-art" src="img/prints/baalbec-lithograph.jpg" alt="Hand-coloured lithograph of the ruins of Baalbek: the six columns and the temple walls, snowy mountains behind, travellers resting in front" width="1600" height="1096">
+      <div class="wrap road-copy">
+        <div class="road-text">
+          <p class="eyebrow">The food road trip <span class="ar" lang="ar" dir="rtl">مشوار الأكل</span></p>
+          <h1 id="roadTitle">From the coast to the Beqaa.</h1>
+          <p class="lead">Lebanon is small enough to have breakfast by the sea and lunch in the mountains. Every town on the road has a plate it is proud of. Here is what to order at each stop.</p>
+        </div>
+        <ol class="route" id="route"></ol>
+        <p class="print-credit">Behind: the ancient city of Baalbec, coloured lithograph by Louis Haghe after David Roberts, 1843. Wellcome Collection, <a href="https://commons.wikimedia.org/wiki/File:The_ancient_city_of_Baalbec._Coloured_lithograph_by_Louis_Ha_Wellcome_V0049487.jpg">public domain</a></p>
+      </div>
+    </section>
+
+    <div class="ornament" aria-hidden="true"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2 17 7H9z"/><path d="M13 5l7 7H6z"/><path d="M13 9l10 9H3z"/><rect class="trunk" x="12" y="18" width="2" height="6"/></svg></div>
+
+    <section class="wrap" aria-labelledby="citiesTitle">
+      <div class="center-head">
+        <p class="eyebrow">The stops <span class="ar" lang="ar" dir="rtl">المحطات</span></p>
+        <h2 id="citiesTitle">Six cities, six plates.</h2>
+        <p class="sub">Up the coast, then over the mountains to the Beqaa. The pictures are real photographs of each place.</p>
+      </div>
+      <div class="city-grid" id="cities" aria-busy="true"></div>
+    </section>
+
+    <div class="wrap"><a class="next-page" href="restaurants.html"><span class="eyebrow">Next</span><span class="next-title">How close is it to Teta's? →</span></a></div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-top">
+        <p class="sahtein">Sahtein!<span class="ar" lang="ar" dir="rtl">صحتين</span></p>
+        <p>The old prints are 19th-century lithographs, engravings and watercolours of Lebanon in the public domain. The pictures of the cities and dishes are real photographs from Wikimedia Commons, shared under free licenses and credited where they appear.</p>
+        <details class="credits" id="credits">
+          <summary>Picture credits</summary>
+          <ul id="creditList"></ul>
+        </details>
+      </div>
+      <div class="footer-inner">
+        <span class="brand">foodies<span class="dot">.</span></span>
+        <p>Web Programming 1 · Julien Matar, Peter Nehmeh, Freddy Rayess</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

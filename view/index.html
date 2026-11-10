@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Foodies · Traditional Lebanese food, found</title>
+  <meta name="description" content="Find traditional Lebanese dishes, what is in them, and the restaurants that make them right.">
+  <meta name="theme-color" content="#2E4B36">
+  <link rel="icon" href="img/cedar.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&family=Aref+Ruqaa:wght@700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/home.js"></script>
+</head>
+<body>
+  <a class="sr-only" href="#main">Skip to content</a>
+
+  <p class="topline">Ahla w sahla<span class="ar" lang="ar" dir="rtl">أهلا وسهلا</span>welcome to the Lebanese table</p>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html" aria-label="Foodies home">foodies<span class="dot">.</span><span class="ar" lang="ar" dir="rtl" aria-hidden="true">فوديز</span></a>
+      <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="nav-panel" id="navPanel">
+        <nav aria-label="Main">
+          <ul class="nav-links">
+            <li><a href="index.html" aria-current="page">Home</a></li>
+            <li><a href="new.html">New here?</a></li>
+            <li><a href="dishes.html">Dishes</a></li>
+            <li><a href="road.html">Road trip</a></li>
+            <li><a href="restaurants.html">Restaurants</a></li>
+            <li><a href="traditions.html">Traditions</a></li>
+          </ul>
+        </nav>
+        <div class="seg" role="group" aria-label="Currency">
+          <button type="button" data-cur="USD" aria-pressed="true">USD</button>
+          <button type="button" data-cur="LBP" aria-pressed="false">LBP</button>
+          <button type="button" data-cur="EUR" aria-pressed="false">EUR</button>
+        </div>
+        <div class="account" id="account">
+          <button class="btn btn-ghost btn-sm" type="button" data-signin>Sign in</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- hero: the cedars watercolour with its sky and far mountains cut away, so it sits on our paper -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <img class="hero-art" src="img/prints/cedars-cutout.png" alt="Watercolour of the cedars of Lebanon: travellers on horseback rest on the path under old cedars" width="1200" height="803">
+      <div class="wrap hero-copy">
+        <p class="eyebrow">Traditional Lebanese food <span class="ar" lang="ar" dir="rtl">أكل لبناني</span></p>
+        <h1 id="heroTitle">Find the dish. <span>Then find who makes it right.</span></h1>
+        <p class="lead">Every mezze, grill and sweet worth crossing Lebanon for: what is in it, how to eat it, and the places that still make it the way Teta did.</p>
+
+        <form class="search" id="searchForm" role="search" action="dishes.html">
+          <label class="field">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <span class="sr-only">Search dishes</span>
+            <input id="q" name="q" type="search" placeholder="Hummus, knefeh, تبولة…" autocomplete="off">
+          </label>
+          <label class="sr-only" for="region">Region</label>
+          <select id="region" name="region">
+            <option value="">All regions</option>
+          </select>
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+        <div class="quick-links">
+          <a class="btn btn-red btn-sm" href="new.html">First time? Start here</a>
+          <a class="btn btn-ghost btn-sm" href="road.html">Take the food road trip</a>
+        </div>
+      </div>
+      <p class="wrap print-credit hero-credit">The Cedars of Lebanon, Friedrich Perlberg, watercolour, before 1921. <a href="https://commons.wikimedia.org/wiki/File:Friedrich_Perlberg_Die_Zedern_des_Libanon.jpg">Public domain</a></p>
+    </section>
+
+    <div class="ornament" aria-hidden="true"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2 17 7H9z"/><path d="M13 5l7 7H6z"/><path d="M13 9l10 9H3z"/><rect class="trunk" x="12" y="18" width="2" height="6"/></svg></div>
+
+    <!-- dish of the day, chosen by the weather in Beirut -->
+    <section class="wrap dotd-sec" aria-label="Dish of the day">
+      <div id="dotd" aria-busy="true">
+        <div class="skel dotd-skel" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <div class="ornament" aria-hidden="true"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2 17 7H9z"/><path d="M13 5l7 7H6z"/><path d="M13 9l10 9H3z"/><rect class="trunk" x="12" y="18" width="2" height="6"/></svg></div>
+
+    <section class="wrap ways" aria-labelledby="waysTitle">
+      <div class="center-head">
+        <p class="eyebrow">Four ways in <span class="ar" lang="ar" dir="rtl">من وين نبلّش</span></p>
+        <h2 id="waysTitle">Where would you like to start?</h2>
+      </div>
+      <div class="ways-grid">
+        <a class="way" href="new.html"><span class="ar" lang="ar" aria-hidden="true">١</span><h3>New here?</h3><p>Eight dishes almost everyone loves, the diets they fit, and how to eat a mezze.</p><span class="way-link">Start with the basics →</span></a>
+        <a class="way" href="dishes.html"><span class="ar" lang="ar" aria-hidden="true">٢</span><h3>Every dish</h3><p>The whole table, with filters for vegan, gluten-free, no nuts, no sesame and more.</p><span class="way-link">See the dishes →</span></a>
+        <a class="way" href="road.html"><span class="ar" lang="ar" aria-hidden="true">٣</span><h3>The road trip</h3><p>Six towns from the coast to the Beqaa, and the plate to order in each of them.</p><span class="way-link">Take the road →</span></a>
+        <a class="way" href="traditions.html"><span class="ar" lang="ar" aria-hidden="true">٤</span><h3>Traditions</h3><p>The morning furn, coffee for every guest, the mouneh kept for winter, the feast-day sweets.</p><span class="way-link">Read the customs →</span></a>
+      </div>
+    </section>
+
+    <div class="ornament" aria-hidden="true"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2 17 7H9z"/><path d="M13 5l7 7H6z"/><path d="M13 9l10 9H3z"/><rect class="trunk" x="12" y="18" width="2" height="6"/></svg></div>
+
+    <!-- Edward Lear's album page, shown as a postcard from Mount Lebanon -->
+    <section class="wrap sahtein-sec" aria-labelledby="sahteinTitle">
+      <figure class="postcard-fig">
+        <div class="postcard">
+          <img src="img/prints/cedar-sketch.jpg" alt="Ink-wash sketch by Edward Lear of a single cedar on Mount Lebanon, captioned in his handwriting" width="1100" height="735" loading="lazy">
+          <div class="stamp" aria-hidden="true"><div class="stamp-in">CEDAR<b>LIBAN</b><span class="ar" lang="ar">لبنان</span></div></div>
+          <svg class="postmark" viewBox="0 0 120 60" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="30" cy="30" r="22"/><circle cx="30" cy="30" r="17" stroke-width=".8"/><path d="M58 18q8-5 16 0t16 0 16 0M58 30q8-5 16 0t16 0 16 0M58 42q8-5 16 0t16 0 16 0"/></g><text x="30" y="33" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor">SAHTEIN</text></svg>
+        </div>
+        <figcaption class="print-credit">Edward Lear, Mount Lebanon, ink wash. <a href="https://commons.wikimedia.org/wiki/File:Edward_Lear_-_Illustration_to_Tennyson%27s_%22The_Gardener%27s_Daughter-%22_Mount_Lebanon,_Syria_-_%60A_Cedar_spread_his_dar..._-_Google_Art_Project.jpg">Public domain</a></figcaption>
+      </figure>
+      <div class="sahtein-copy">
+        <h2 id="sahteinTitle">Sahtein! <span class="ar" lang="ar" dir="rtl">صحتين</span></h2>
+        <p>"To your health": say it before you start eating. The answer is <strong>'Ala albak</strong>, "on your heart".</p>
+        <a class="btn btn-primary" href="new.html">Learn the words for the table</a>
+      </div>
+    </section>
+
+    <div class="wrap"><a class="next-page" href="new.html"><span class="eyebrow">Next</span><span class="next-title">New to Lebanese food? →</span></a></div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-top">
+        <p class="sahtein">Sahtein!<span class="ar" lang="ar" dir="rtl">صحتين</span></p>
+        <p>The old prints are 19th-century lithographs, engravings and watercolours of Lebanon in the public domain. The pictures of the cities and dishes are real photographs from Wikimedia Commons, shared under free licenses and credited where they appear.</p>
+        <details class="credits" id="credits">
+          <summary>Picture credits</summary>
+          <ul id="creditList"></ul>
+        </details>
+      </div>
+      <div class="footer-inner">
+        <span class="brand">foodies<span class="dot">.</span></span>
+        <p>Web Programming 1 · Julien Matar, Peter Nehmeh, Freddy Rayess</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
