@@ -4,8 +4,8 @@
 
 // PostgreSQL error codes we can explain to the client
 const PG_ERRORS = {
-  23503: { status: 400, message: 'A referenced id does not exist (check category_id or region_id)' },
-  23505: { status: 409, message: 'This record already exists' },
+  23503: { status: 400, message: 'A referenced id does not exist (check the ids you sent)' },
+  23505: { status: 409, message: 'This record already exists (an email, slug or name is already used)' },
   23514: { status: 400, message: 'A value is out of the allowed range' },
 };
 

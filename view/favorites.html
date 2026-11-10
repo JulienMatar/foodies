@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My favorites · Foodies</title>
+  <meta name="theme-color" content="#2E4B36">
+  <link rel="icon" href="img/cedar.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&family=Aref+Ruqaa:wght@700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/favorites.js"></script>
+</head>
+<body>
+  <a class="sr-only" href="#main">Skip to content</a>
+
+  <p class="topline">Ahla w sahla<span class="ar" lang="ar" dir="rtl">أهلا وسهلا</span>welcome to the Lebanese table</p>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html" aria-label="Foodies home">foodies<span class="dot">.</span><span class="ar" lang="ar" dir="rtl" aria-hidden="true">فوديز</span></a>
+      <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="nav-panel" id="navPanel">
+        <nav aria-label="Main">
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="new.html">New here?</a></li>
+            <li><a href="dishes.html">Dishes</a></li>
+            <li><a href="road.html">Road trip</a></li>
+            <li><a href="restaurants.html">Restaurants</a></li>
+            <li><a href="traditions.html">Traditions</a></li>
+          </ul>
+        </nav>
+        <div class="seg" role="group" aria-label="Currency">
+          <button type="button" data-cur="USD" aria-pressed="true">USD</button>
+          <button type="button" data-cur="LBP" aria-pressed="false">LBP</button>
+          <button type="button" data-cur="EUR" aria-pressed="false">EUR</button>
+        </div>
+        <div class="account" id="account">
+          <button class="btn btn-ghost btn-sm" type="button" data-signin>Sign in</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap fav-page" id="main">
+    <section class="page-head" aria-labelledby="favTitle">
+      <p class="eyebrow">Saved for later <span class="ar" lang="ar" dir="rtl">المفضلة</span></p>
+      <h1 id="favTitle">My favorites</h1>
+      <p class="lead" id="favLead">The dishes you saved, the last one first.</p>
+    </section>
+    <div class="grid" id="favGrid" aria-busy="true"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-top">
+        <p class="sahtein">Sahtein!<span class="ar" lang="ar" dir="rtl">صحتين</span></p>
+        <p>The old prints are 19th-century lithographs, engravings and watercolours of Lebanon in the public domain. The pictures of the cities and dishes are real photographs from Wikimedia Commons, shared under free licenses and credited where they appear.</p>
+        <details class="credits" id="credits">
+          <summary>Picture credits</summary>
+          <ul id="creditList"></ul>
+        </details>
+      </div>
+      <div class="footer-inner">
+        <span class="brand">foodies<span class="dot">.</span></span>
+        <p>Web Programming 1 · Julien Matar, Peter Nehmeh, Freddy Rayess</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
