@@ -1,0 +1,31 @@
+# Render blueprint: deploys the website + API as one Node web service
+# (Render dashboard -> New -> Blueprint -> pick this GitHub repository).
+# The database is on Neon (https://neon.tech, free, doesn't expire): paste its connection string in DATABASE_URL.
+# Create the tables once from your computer, see "Deployment" in the README.
+services:
+  - type: web
+    name: foodies
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false                  # the Neon connection string, typed in the dashboard
+      - key: JWT_SECRET
+        generateValue: true          # Render makes a long random secret
+      - key: OPENAI_API_KEY
+        sync: false                  # typed by hand in the dashboard, never in git
+      - key: OPENAI_MODEL
+        sync: false
+      - key: CHAT_DAILY_LIMIT
+        value: "300"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false

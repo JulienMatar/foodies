@@ -2,43 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ask Teta · Foodies</title>
-  <meta name="theme-color" content="#14120F">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314120F'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F4B740'/%3E%3C/svg%3E">
+  <meta name="description" content="Ask Teta, the Foodies chatbot, what to eat and where in Lebanon.">
+  <meta name="theme-color" content="#2E4B36">
+  <link rel="icon" href="img/cedar.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=Reem+Kufi:wght@700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&family=Aref+Ruqaa:wght@700&display=swap">
   <link rel="stylesheet" href="css/styles.css">
   <script type="module" src="js/chat.js"></script>
 </head>
-<body class="chat-body">
-  <div class="chat-page">
-    <header class="chat-head">
-      <a class="icon-btn" href="index.html" aria-label="Back to home">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-      </a>
-      <div class="avatar" lang="ar" dir="rtl" aria-hidden="true">تيتا</div>
-      <div>
-        <h1>Ask Teta</h1>
-        <p class="status"><span class="live-dot" aria-hidden="true"></span>Online · knows every mezze in Lebanon</p>
+<body>
+  <a class="sr-only" href="#main">Skip to content</a>
+
+  <p class="topline">Ahla w sahla<span class="ar" lang="ar" dir="rtl">أهلا وسهلا</span>welcome to the Lebanese table</p>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html" aria-label="Foodies home">foodies<span class="dot">.</span><span class="ar" lang="ar" dir="rtl" aria-hidden="true">فوديز</span></a>
+      <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="nav-panel" id="navPanel">
+        <nav aria-label="Main">
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="new.html">New here?</a></li>
+            <li><a href="dishes.html">Dishes</a></li>
+            <li><a href="road.html">Road trip</a></li>
+            <li><a href="restaurants.html">Restaurants</a></li>
+            <li><a href="traditions.html">Traditions</a></li>
+            <li><a href="chat.html" aria-current="page">Ask Teta</a></li>
+          </ul>
+        </nav>
+        <div class="seg" role="group" aria-label="Currency">
+          <button type="button" data-cur="USD" aria-pressed="true">USD</button>
+          <button type="button" data-cur="LBP" aria-pressed="false">LBP</button>
+          <button type="button" data-cur="EUR" aria-pressed="false">EUR</button>
+        </div>
+        <div class="account" id="account">
+          <button class="btn btn-ghost btn-sm" type="button" data-signin>Sign in</button>
+        </div>
       </div>
-    </header>
-
-    <main class="thread" id="thread" role="log" aria-live="polite" aria-label="Conversation with Teta">
-      <p class="day">Today</p>
-    </main>
-
-    <div class="composer">
-      <div class="suggestions" id="suggestions" role="group" aria-label="Suggested questions"></div>
-      <form class="chat-form" id="chatForm">
-        <label class="sr-only" for="msg">Ask Teta a question</label>
-        <input id="msg" type="text" placeholder="Ask about a dish or a region…" autocomplete="off" maxlength="500">
-        <button class="send" id="send" type="submit" aria-label="Send">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10.5 13.5"/><path d="M21 3 14.5 21l-4-7.5L3 9.5z"/></svg>
-        </button>
-      </form>
     </div>
-  </div>
+  </header>
+
+  <main id="main">
+    <section class="wrap page-head" aria-labelledby="chatTitle">
+      <p class="eyebrow">Ask Teta <span class="ar" lang="ar" dir="rtl">إسأل تيتا</span></p>
+      <h1 id="chatTitle">Tell Teta what you feel like eating</h1>
+      <p class="lead">A dish, a craving, an allergy, a city, a budget: she knows every menu on Foodies and who makes it right.</p>
+    </section>
+
+    <section class="wrap chat-wrap" aria-label="Conversation with Teta">
+      <div class="chat-box">
+        <p class="chat-status" id="chatStatus"><span class="live-dot" aria-hidden="true"></span><span>Teta is here</span></p>
+        <div class="thread" id="thread" role="log" aria-live="polite" aria-label="Conversation with Teta"></div>
+        <div class="composer">
+          <div class="suggestions chips" id="suggestions" role="group" aria-label="Suggested questions"></div>
+          <form class="chat-form" id="chatForm">
+            <label class="sr-only" for="msg">Ask Teta a question</label>
+            <input id="msg" type="text" placeholder="Ask about a dish, a diet or a city…" autocomplete="off" maxlength="500">
+            <button class="send" id="send" type="submit" aria-label="Send">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10.5 13.5"/><path d="M21 3 14.5 21l-4-7.5L3 9.5z"/></svg>
+            </button>
+          </form>
+          <p class="chat-note">Teta can make mistakes. With an allergy, always check with the restaurant.</p>
+        </div>
+      </div>
+
+      <figure class="print chat-print">
+        <div class="mount"><img src="img/prints/cedar-sketch.jpg" alt="Ink wash of a cedar on Mount Lebanon by Edward Lear" width="900" height="640" loading="lazy"></div>
+        <figcaption>Edward Lear, <em>A Cedar spread his dark green layers of shade</em>, Mount Lebanon</figcaption>
+      </figure>
+    </section>
+
+    <div class="wrap"><a class="next-page" href="index.html"><span class="eyebrow">Back to</span><span class="next-title">The Lebanese table →</span></a></div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-top">
+        <p class="sahtein">Sahtein!<span class="ar" lang="ar" dir="rtl">صحتين</span></p>
+        <p>The old prints are 19th-century lithographs, engravings and watercolours of Lebanon in the public domain. The pictures of the cities and dishes are real photographs from Wikimedia Commons, shared under free licenses and credited where they appear.</p>
+        <details class="credits" id="credits">
+          <summary>Picture credits</summary>
+          <ul id="creditList"></ul>
+        </details>
+      </div>
+      <div class="footer-inner">
+        <span class="brand">foodies<span class="dot">.</span></span>
+        <p>Web Programming 1 · Julien Matar, Peter Nehmeh, Freddy Rayess</p>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

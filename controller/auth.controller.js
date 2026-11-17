@@ -104,6 +104,7 @@ async function googleCallback(req, res) {
   // trade the one-time code for an access token
   const tokenRes = await fetch(GOOGLE_TOKEN_URL, {
     method: 'POST',
+    signal: AbortSignal.timeout(8000), // don't wait for Google forever
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       code,
@@ -117,7 +118,10 @@ async function googleCallback(req, res) {
   const { access_token } = await tokenRes.json();
 
   // ask Google who the user is: { sub (their Google id), email, email_verified, name }
-  const profileRes = await fetch(GOOGLE_USERINFO_URL, { headers: { Authorization: `Bearer ${access_token}` } });
+  const profileRes = await fetch(GOOGLE_USERINFO_URL, {
+    headers: { Authorization: `Bearer ${access_token}` },
+    signal: AbortSignal.timeout(8000),
+  });
   if (!profileRes.ok) return res.status(400).json({ error: 'Google sign-in failed, please try again' });
   const profile = await profileRes.json();
 

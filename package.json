@@ -4,7 +4,12 @@
   "description": "Foodies: find traditional Lebanese dishes and the restaurants that serve them",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:setup": "node db/setup.js"
+  },
+  "engines": {
+    "node": ">=20.12"
   },
   "keywords": [],
   "author": "Julien Matar, Peter Nehmeh, Freddy Rayess",

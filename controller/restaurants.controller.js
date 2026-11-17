@@ -1,6 +1,7 @@
 const restaurantsModule = require('../modules/restaurants.module');
 const menuModule = require('../modules/menu.module');
 const dishesModule = require('../modules/dishes.module');
+const { clearCatalogCache } = require('../modules/chat.module'); // Teta's catalog must see the change
 
 // GET /api/restaurants?dish=&region=&style=&sort=  (req.filters comes from validateRestaurantFilters)
 async function getAll(req, res) {
@@ -19,17 +20,20 @@ async function getById(req, res) {
 
 async function createRestaurant(req, res) {
   const restaurant = await restaurantsModule.create(req.body);
+  clearCatalogCache();
   res.status(201).json(restaurant); // 201 Created
 }
 
 async function replaceRestaurant(req, res) {
   const restaurant = await restaurantsModule.replace(req.validatedId, req.body);
+  clearCatalogCache();
   if (!restaurant) return res.status(404).json({ error: 'Restaurant not found' });
   res.json(restaurant);
 }
 
 async function deleteRestaurant(req, res) {
   const deleted = await restaurantsModule.remove(req.validatedId);
+  clearCatalogCache();
   if (!deleted) return res.status(404).json({ error: 'Restaurant not found' });
   res.status(204).end(); // 204 No Content
 }
@@ -43,6 +47,7 @@ async function addDish(req, res) {
   if (!(await dishesModule.findById(req.body.dish_id))) return res.status(404).json({ error: 'Dish not found' });
 
   const item = await menuModule.add(restaurantId, req.body);
+  clearCatalogCache();
   if (!item) return res.status(409).json({ error: 'This dish is already on the menu, use PUT to change it' });
   res.status(201).json(item);
 }
@@ -50,6 +55,7 @@ async function addDish(req, res) {
 // PUT /api/restaurants/:id/dishes/:dishId { price_usd?, available? }
 async function updateDish(req, res) {
   const item = await menuModule.update(req.validatedId, req.validatedDishId, req.body);
+  clearCatalogCache();
   if (!item) return res.status(404).json({ error: 'This dish is not on the menu of this restaurant' });
   res.json(item);
 }
@@ -57,6 +63,7 @@ async function updateDish(req, res) {
 // DELETE /api/restaurants/:id/dishes/:dishId
 async function removeDish(req, res) {
   const deleted = await menuModule.remove(req.validatedId, req.validatedDishId);
+  clearCatalogCache();
   if (!deleted) return res.status(404).json({ error: 'This dish is not on the menu of this restaurant' });
   res.status(204).end();
 }

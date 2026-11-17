@@ -1,10 +1,10 @@
 // checks the query string of the list routes and saves the clean values in req.filters
 //   GET /api/dishes?search=&category=&vegetarian=&vegan=&gluten_free=&without=nuts,sesame
-//   GET /api/restaurants?dish=&region=&style=&sort=
+//   GET /api/restaurants?dish=&region=&style=&sort=&near=33.89,35.50
 // every filter is optional; an empty value (?category=) counts as not sent
 
 const STYLES = ['heritage', 'authentic', 'fusion', 'modern'];
-const SORTS = ['authentic', 'mix', 'modern', 'price_asc', 'price_desc', 'top_rated'];
+const SORTS = ['authentic', 'mix', 'modern', 'price_asc', 'price_desc', 'top_rated', 'nearest'];
 const ALLERGENS = ['gluten', 'dairy', 'nuts', 'sesame', 'fish', 'eggs'];
 
 // '' and undefined both mean "no filter"
@@ -50,7 +50,7 @@ function validateDishFilters(req, res, next) {
 }
 
 function validateRestaurantFilters(req, res, next) {
-  const { dish, region, style, sort } = req.query;
+  const { dish, region, style, sort, near } = req.query;
   const filters = {};
 
   if (given(dish)) {
@@ -68,6 +68,18 @@ function validateRestaurantFilters(req, res, next) {
   if (given(sort)) {
     if (!SORTS.includes(sort)) return res.status(400).json({ error: `sort must be one of: ${SORTS.join(', ')}` });
     filters.sort = sort;
+  }
+  // near=lat,lng -> the visitor's position (from the browser): adds distance_km to every restaurant
+  if (given(near)) {
+    const ok = /^-?\d{1,3}(\.\d+)?,-?\d{1,3}(\.\d+)?$/.test(near);
+    const [lat, lng] = String(near).split(',').map(Number);
+    if (!ok || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+      return res.status(400).json({ error: 'near must be latitude,longitude, e.g. 33.89,35.50' });
+    }
+    filters.near = { lat, lng };
+  }
+  if (filters.sort === 'nearest' && !filters.near) {
+    return res.status(400).json({ error: 'sort=nearest needs near=latitude,longitude' });
   }
 
   req.filters = filters;

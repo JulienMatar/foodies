@@ -21,6 +21,7 @@ function orderBy(sort, byDish) {
     price_asc: `${price} ASC, r.name`,
     price_desc: `${price} DESC, r.name`,
     top_rated: 'avg_rating DESC NULLS LAST, review_count DESC, r.name',
+    nearest: 'distance_km ASC NULLS LAST, r.name',
   };
   return SORTS[sort] || 'r.name';
 }
@@ -29,7 +30,9 @@ function orderBy(sort, byDish) {
 //   filters.dish   -> only the restaurants where this dish is available (adds its price_usd)
 //   filters.region -> region id
 //   filters.style  -> heritage, authentic, fusion or modern
-//   filters.sort   -> authentic, mix, modern, price_asc, price_desc, top_rated (default: by name)
+//   filters.near   -> { lat, lng }: adds distance_km, how far each restaurant is (as the crow flies)
+//   filters.sort   -> authentic, mix, modern, price_asc, price_desc, top_rated, nearest
+//                     (default: nearest when near is sent, otherwise by name)
 async function findAll(filters = {}) {
   const conditions = [];
   const values = [];
@@ -52,17 +55,29 @@ async function findAll(filters = {}) {
     conditions.push(`r.style = $${values.length}`);
   }
 
+  let distanceColumn = '';
+  if (filters.near) {
+    values.push(filters.near.lat, filters.near.lng);
+    const lat = `$${values.length - 1}`;
+    const lng = `$${values.length}`;
+    // the haversine formula: the distance between two points on a sphere (the Earth, radius 6371 km)
+    distanceColumn = `ROUND((6371 * 2 * ASIN(SQRT(
+        POWER(SIN(RADIANS(r.lat - ${lat}) / 2), 2) +
+        COS(RADIANS(${lat})) * COS(RADIANS(r.lat)) * POWER(SIN(RADIANS(r.lng - ${lng}) / 2), 2)
+      )))::numeric, 1)::float AS distance_km,`;
+  }
+
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
   const { rows } = await pool.query(
-    `SELECT r.*, g.name AS region, ${dishColumns} ${SCORES}
+    `SELECT r.*, g.name AS region, ${dishColumns} ${distanceColumn} ${SCORES}
      FROM restaurants r
      JOIN regions g ON g.id = r.region_id
      ${dishJoin}
      LEFT JOIN reviews v ON v.restaurant_id = r.id
      ${where}
      GROUP BY r.id, g.name ${dishGroup}
-     ORDER BY ${orderBy(filters.sort, Boolean(filters.dish))}`,
+     ORDER BY ${orderBy(filters.sort || (filters.near ? 'nearest' : ''), Boolean(filters.dish))}`,
     values
   );
   return rows;

@@ -1,21 +1,24 @@
-// Ask Teta: a chat thread. Answers come from api.askTeta() (a mock for POST /api/chat for now).
+// Ask Teta: a chat thread. The answers come from POST /api/chat
+// (OpenAI on the server when it has a key, Teta's built-in rules otherwise).
 
 import * as api from './api.js';
-import { initCurrency, toast, reduceMotion, esc, price, priceLevel, capitalize } from './ui.js';
+import { initNav, initCurrency, toast, reduceMotion, esc, price, priceLevel, capitalize, dishImg } from './ui.js';
 
 const $ = (id) => document.getElementById(id);
 
 const SUGGESTIONS = [
   "Where's the best kibbeh nayeh?",
   'Something vegetarian in Byblos',
+  "I'm allergic to nuts, what can I eat?",
   'Cheapest knefeh',
   'What should I eat on a cold day?',
-  'Grills in Beirut',
 ];
 
 const thread = $('thread');
+const history = []; // the conversation so far, sent with each question (the server keeps the last 6)
 let busy = false;
 
+initNav();
 initCurrency();
 
 $('suggestions').innerHTML = SUGGESTIONS.map((s) => `<button class="chip" type="button">${esc(s)}</button>`).join('');
@@ -29,9 +32,14 @@ $('chatForm').addEventListener('submit', (e) => {
   ask($('msg').value);
 });
 
-addBubble('teta', "Ahlan, I'm Teta. Tell me what you feel like eating, or where you are, and I'll tell you who makes it right.");
+// says if the answers come from the AI or from Teta's notebook (the rules)
+api.getChatStatus().then(({ ai }) => {
+  $('chatStatus').lastElementChild.textContent = ai ? 'Teta is here · answers written by AI' : "Teta is here · answers from her notebook";
+}).catch(() => {});
 
-// a question passed in the link, e.g. from "Ask Teta about it" on a dish page
+addBubble('teta', "Ahlan, habibi! I'm Teta. Tell me what you feel like eating, where you are, or what you can't eat, and I'll tell you who makes it right.");
+
+// a question passed in the link, e.g. chat.html?q=hummus
 const fromLink = new URLSearchParams(location.search).get('q');
 if (fromLink) ask(fromLink);
 
@@ -40,12 +48,16 @@ function scrollDown() {
 }
 
 function addBubble(who, text) {
+  const row = document.createElement('div');
+  row.className = `msg ${who}`;
+  if (who === 'teta') row.innerHTML = '<span class="avatar" lang="ar" dir="rtl" aria-hidden="true">تيتا</span>';
   const p = document.createElement('p');
-  p.className = `bubble ${who}`;
-  p.textContent = text;
-  thread.append(p);
+  p.className = 'bubble';
+  p.textContent = text; // textContent, never innerHTML: the answer can't inject HTML
+  row.append(p);
+  thread.append(row);
   scrollDown();
-  return p;
+  return row;
 }
 
 function addResults(results) {
@@ -53,10 +65,13 @@ function addResults(results) {
   const box = document.createElement('div');
   box.className = 'results';
   box.innerHTML = results.map(({ restaurant: r, dish, price_usd: usd }) => `
-    <a class="result" href="${dish ? `dish.html?id=${dish.id}` : 'restaurants.html'}">
-      <strong>${esc(r.name)}</strong>
+    <a class="result" href="${dish ? `dish.html?id=${dish.id}` : `restaurant.html?id=${r.id}`}">
+      ${dish ? dishImg(dish, 'result-img') : ''}
+      <span class="result-text">
+        <strong>${esc(r.name)}</strong>
+        <span class="meta">${dish ? `${esc(dish.name_en)} · ` : ''}${esc(r.region)} · ${esc(capitalize(r.style))} · ${priceLevel(r.price_level)}</span>
+      </span>
       ${usd !== null ? `<span class="price">${price(usd)}</span>` : ''}
-      <span class="meta">${dish ? `${esc(dish.name_en)} · ` : ''}${esc(r.region)} · ${esc(capitalize(r.style))} · ${priceLevel(r.price_level)}</span>
     </a>`).join('');
   thread.append(box);
   scrollDown();
@@ -72,20 +87,20 @@ async function ask(raw) {
   addBubble('me', question);
 
   const typing = document.createElement('div');
-  typing.className = 'bubble teta typing';
-  typing.setAttribute('aria-label', 'Teta is typing');
-  typing.innerHTML = '<span></span><span></span><span></span>';
+  typing.className = 'msg teta';
+  typing.innerHTML = '<span class="avatar" lang="ar" dir="rtl" aria-hidden="true">تيتا</span><p class="bubble typing" aria-label="Teta is typing"><span></span><span></span><span></span></p>';
   thread.append(typing);
   scrollDown();
 
   try {
-    const reply = await api.askTeta(question);
+    const reply = await api.askTeta(question, history.slice(-6));
     typing.remove();
     addBubble('teta', reply.answer);
     addResults(reply.results);
+    history.push({ role: 'user', text: question }, { role: 'teta', text: reply.answer });
   } catch (err) {
     typing.remove();
-    toast(err.message);
+    toast(err.message); // e.g. 429: too many questions in a minute
   } finally {
     busy = false;
     $('send').disabled = false;

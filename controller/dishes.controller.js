@@ -1,4 +1,5 @@
 const dishesModule = require('../modules/dishes.module');
+const { clearCatalogCache } = require('../modules/chat.module'); // Teta's catalog must see the change
 
 // GET /api/dishes?search=&category=&vegetarian=  (req.filters comes from validateDishFilters)
 async function getAll(req, res) {
@@ -17,17 +18,20 @@ async function getById(req, res) {
 
 async function createDish(req, res) {
   const dish = await dishesModule.create(req.body);
+  clearCatalogCache();
   res.status(201).json(dish); // 201 Created
 }
 
 async function replaceDish(req, res) {
   const dish = await dishesModule.replace(req.validatedId, req.body);
+  clearCatalogCache();
   if (!dish) return res.status(404).json({ error: 'Dish not found' });
   res.json(dish);
 }
 
 async function deleteDish(req, res) {
   const deleted = await dishesModule.remove(req.validatedId);
+  clearCatalogCache();
   if (!deleted) return res.status(404).json({ error: 'Dish not found' });
   res.status(204).end(); // 204 No Content -- success, nothing to send back
 }
