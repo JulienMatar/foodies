@@ -93,6 +93,7 @@ export function sortRestaurants(list, sort) {
     price_asc: (a, b) => price(a) - price(b),
     price_desc: (a, b) => price(b) - price(a),
     top_rated: (a, b) => b.rating - a.rating || b.reviews - a.reviews,
+    nearest: (a, b) => (a.distance_km ?? Infinity) - (b.distance_km ?? Infinity),
   };
   return [...list].sort(sorters[sort] || byTradition);
 }
@@ -144,120 +145,22 @@ export const createReview = (restaurantId, review) => send('POST', `/restaurants
 export const updateReview = (id, review) => send('PUT', `/reviews/${id}`, review);
 export const deleteReview = (id) => send('DELETE', `/reviews/${id}`);
 
-// ---------- still in the browser ----------
+// ---------- Ask Teta (POST /api/chat) ----------
+// the server answers with OpenAI when it has a key, or with its built-in rules otherwise.
+// history = the last messages, so Teta remembers what we were talking about
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export const askTeta = (question, history = []) => send('POST', '/chat', { question, history });
+export const getChatStatus = () => request('/chat/status'); // { ai: true | false, model }
 
-// ---------- Ask Teta (mock chatbot) ----------
+// ---------- near me ----------
 
-// other spellings people type for some dishes
-const ALIASES = {
-  Hummus: ['hommos', 'houmous', 'humus'],
-  Knefeh: ['knafeh', 'kunafa', 'kanafeh', 'knafe'],
-  'Manoushe Zaatar': ['manakish', 'manaeesh', 'manousheh', 'manouche'],
-  'Shish Taouk': ['tawook', 'taouk', 'chicken'],
-  Mloukhieh: ['molokhia', 'mulukhiyah', 'mlukhiye'],
-  'Baba Ghanouj': ['moutabal', 'mutabal', 'eggplant'],
-};
-
-const CATEGORY_WORDS = {
-  Mezze: ['mezze', 'meze', 'starter', 'salad'],
-  Grills: ['grill', 'bbq', 'skewer'],
-  Seafood: ['fish', 'seafood'],
-  Stews: ['stew', 'home cooking'],
-  Desserts: ['dessert', 'sweet', 'sugar'],
-  Bakery: ['bakery', 'bread', 'breakfast'],
-};
-
-// true if a word in the question starts with `word`
-function has(text, word) {
-  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`(^|[^a-z])${escaped}`).test(text);
+// the restaurants sorted by distance from a position, each with distance_km
+export async function getRestaurantsNear(lat, lng) {
+  const list = await request(`/restaurants?near=${lat.toFixed(4)},${lng.toFixed(4)}`);
+  return list.map(withScores);
 }
 
-function dishWords(dish) {
-  return dish.name_en.toLowerCase().split(/\s+/).filter((w) => w.length >= 4).concat(ALIASES[dish.name_en] || []);
-}
+// ---------- admin (need an admin login) ----------
 
-// returns { answer, dish_id, results: [{ restaurant, dish, price_usd }] }
-export async function askTeta(question) {
-  // TODO: replace with real endpoint -- POST /api/chat { question } (rate-limited, saved in chat_logs)
-  const [dishes, restaurants, regions, menu] = await Promise.all([getDishes(), getRestaurantsWithScores(), getRegions(), getMenu()]);
-  await wait(650);
-
-  const q = question.toLowerCase();
-  const region = regions.find((r) => has(q, r.name.toLowerCase()));
-  const where = region ? ` in ${region.name}` : '';
-  const cheap = /cheap|budget|afford|price|least/.test(q);
-
-  const placesFor = (dish) => menu
-    .filter((m) => m.dish_id === dish.id && m.available)
-    .map((m) => ({ restaurant: restaurants.find((r) => r.id === m.restaurant_id), dish, price_usd: m.price_usd }))
-    .filter((p) => p.restaurant && (!region || p.restaurant.region_id === region.id));
-  const rank = (places) => places.sort(cheap
-    ? (a, b) => a.price_usd - b.price_usd
-    : (a, b) => b.restaurant.tradition - a.restaurant.tradition || b.restaurant.rating - a.restaurant.rating);
-
-  // 1. the question names a dish
-  const dish = dishes.find((d) => (d.name_ar && question.includes(d.name_ar)) || dishWords(d).some((w) => has(q, w)));
-  if (dish) {
-    const places = rank(placesFor(dish)).slice(0, 3);
-    if (!places.length) {
-      return { answer: `Nobody makes ${dish.name_en}${where} yet, habibi. Ask me again without the region and I'll find you a place.`, dish_id: dish.id, results: [] };
-    }
-    const top = places[0].restaurant;
-    const count = places.length === 1 ? 'One place makes it' : `${places.length} places make it`;
-    const why = cheap ? 'it has the best price' : `they score ${top.tradition} out of 5 for tradition`;
-    return {
-      answer: `${dish.name_en}! ${dish.description} ${count}${where}. Go to ${top.name} first, ${why}.`,
-      dish_id: dish.id,
-      results: places,
-    };
-  }
-
-  // 2. the question describes what they want: a category, vegetarian, or the weather
-  let pool = dishes;
-  let filtered = false;
-  const category = Object.entries(CATEGORY_WORDS).find(([, words]) => words.some((w) => has(q, w)));
-  if (category) { pool = pool.filter((d) => d.category === category[0]); filtered = true; }
-  if (/vegetarian|veggie|vegan|no meat/.test(q)) { pool = pool.filter((d) => d.is_vegetarian); filtered = true; }
-  if (/cold|winter|rain|warm me/.test(q)) { pool = pool.filter((d) => d.weather === 'cold'); filtered = true; }
-  else if (/hot day|summer|heat|fresh|light/.test(q)) { pool = pool.filter((d) => d.weather === 'hot'); filtered = true; }
-
-  if (filtered) {
-    const places = rank(pool.flatMap(placesFor));
-    if (!places.length) {
-      return { answer: `I can't find anything like that${where}, ya albi. Try another region, or ask me about a dish by name.`, dish_id: null, results: [] };
-    }
-    // the best place for each of the first 3 dishes (places is already ranked)
-    const best = places.filter((p, i) => places.findIndex((x) => x.dish.id === p.dish.id) === i).slice(0, 3);
-    const names = best.map((p) => p.dish.name_en);
-    const list = names.length > 1 ? `${names.slice(0, -1).join(', ')} or ${names.at(-1)}` : names[0];
-    const top = best[0];
-    return {
-      answer: `For that, I'd have ${list}${where}. My pick: ${top.dish.name_en} at ${top.restaurant.name}.`,
-      dish_id: top.dish.id,
-      results: best,
-    };
-  }
-
-  // 3. only a region
-  if (region) {
-    const here = rank(restaurants
-      .filter((r) => r.region_id === region.id)
-      .map((r) => ({ restaurant: r, dish: null, price_usd: null })));
-    if (!here.length) return { answer: `I don't know a good place in ${region.name} yet. Soon, inshallah.`, dish_id: null, results: [] };
-    const top = here[0].restaurant;
-    return {
-      answer: `In ${region.name}, start with ${top.name}. It's ${top.style}, and diners give it ${top.tradition} out of 5 for tradition.`,
-      dish_id: null,
-      results: here.slice(0, 3),
-    };
-  }
-
-  return {
-    answer: "Ahlan! I only know Lebanese food, habibi. Ask me about a dish like hummus or knefeh, what to eat on a cold day, or what's good in Byblos.",
-    dish_id: null,
-    results: [],
-  };
-}
+export const getAdminStats = () => request('/admin/stats');
+export const getChatLogs = (page = 1, limit = 10) => request(`/admin/chat-logs?page=${page}&limit=${limit}`);

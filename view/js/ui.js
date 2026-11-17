@@ -30,6 +30,7 @@ const ICON_PATHS = {
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/>',
   pin: '<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/>',
   check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  chart: '<path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/>',
 };
 
 export function icon(name, className = 'icon') {
@@ -253,8 +254,12 @@ function setUser(user) {
 function renderAccount(user) {
   const box = document.getElementById('account');
   if (!box) return;
+  // admins also get a link to the dashboard (the API checks the role again, this link only shows the way)
+  const admin = user?.role === 'admin'
+    ? `<a class="icon-btn" href="admin.html" title="Admin dashboard" aria-label="Admin dashboard">${icon('chart', 'icon icon-sm')}</a>`
+    : '';
   box.innerHTML = user
-    ? `<a class="btn btn-ghost btn-sm" href="favorites.html" title="My favorites">${icon('heart', 'icon icon-sm')}${esc(user.name.split(' ')[0])}</a>
+    ? `${admin}<a class="btn btn-ghost btn-sm" href="favorites.html" title="My favorites">${icon('heart', 'icon icon-sm')}${esc(user.name.split(' ')[0])}</a>
        <button class="btn btn-cream btn-sm" type="button" data-signout>Sign out</button>`
     : '<button class="btn btn-cream btn-sm" type="button" data-signin>Sign in</button>';
 }
