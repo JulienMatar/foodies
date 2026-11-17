@@ -1,11 +1,7 @@
-# Render blueprint: deploys the website + API and a PostgreSQL database in one click
+# Render blueprint: deploys the website + API as one Node web service
 # (Render dashboard -> New -> Blueprint -> pick this GitHub repository).
-# After the first deploy, open the web service's Shell and run: npm run db:setup
-databases:
-  - name: foodies-db
-    plan: free
-    databaseName: foodies
-
+# The database is on Neon (https://neon.tech, free, doesn't expire): paste its connection string in DATABASE_URL.
+# Create the tables once from your computer, see "Deployment" in the README.
 services:
   - type: web
     name: foodies
@@ -18,9 +14,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: foodies-db
-          property: connectionString
+        sync: false                  # the Neon connection string, typed in the dashboard
       - key: JWT_SECRET
         generateValue: true          # Render makes a long random secret
       - key: OPENAI_API_KEY

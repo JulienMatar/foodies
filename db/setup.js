@@ -1,6 +1,6 @@
 // creates the tables and adds the sample data: runs db/schema.sql then db/seed.sql
 //   npm run db:setup
-// useful online, where there is no DBeaver: point DATABASE_URL (or PGHOST...) at the hosted database first.
+// useful for the hosted database (Neon): set DATABASE_URL to its connection string first, see the README.
 // WARNING: schema.sql drops the tables first, so this deletes all the data of that database.
 
 try {
