@@ -143,7 +143,7 @@ Access: Public = no login, User = logged in, Owner = the author of the review, A
 With `?dish=`, only the restaurants where that dish is available are listed, with its `price_usd`, and the price sorts use it.
 
 Errors are always JSON: `{ "error": "message" }`.
-The API design (the 32 planned endpoints) is in `project_design/Foodies_Endpoints.pdf`,
+The API design (all 36 endpoints) is in `project_design/Foodies_Endpoints.pdf` (made from `Foodies_Endpoints.html`: open it in Chrome and print to PDF to update it),
 and the database design in `project_design/Foodies_ER_Diagram.pdf` (it matches `db/schema.sql` and `db/foodies.dbml`).
 
 ## Ask Teta: how the chatbot works

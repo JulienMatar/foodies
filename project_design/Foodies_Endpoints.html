@@ -1,0 +1,110 @@
+<!doctype html>
+<!-- Source of Foodies_Endpoints.pdf and .png. To regenerate them after a change, open this file in Chrome
+     and print to PDF (A4, no margins), or see "Design files" in the README. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Foodies — REST API Endpoints</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", "Open Sans", Arial, sans-serif; color: #222; background: #fff; }
+  .page { width: 1050px; padding: 22px 28px 12px; }
+  h1 { margin: 0; font-size: 27px; color: #1e5a3c; font-weight: 800; }
+  .sub { margin: 3px 0 14px; font-size: 10.5px; color: #555; }
+  code, .ep { font-family: Consolas, "Courier New", monospace; }
+  .info { background: #edf3ee; border-left: 5px solid #1e5a3c; padding: 8px 14px; font-size: 11px; line-height: 1.45; margin-bottom: 10px; }
+  .info p { margin: 0 0 3px; }
+  .info code { font-size: 11.5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.2px; }
+  th { background: #1e5a3c; color: #fff; text-align: left; padding: 6px 7px; font-weight: 700; }
+  td { padding: 3px 7px; border-bottom: 1px solid #e3e3e3; vertical-align: top; line-height: 1.4; }
+  tr.group td { background: #c8102e; color: #fff; font-weight: 700; padding: 4px 7px; border: 0; }
+  tr.group.new td { background: #1e5a3c; }
+  .m { font-weight: 700; width: 62px; }
+  .GET { color: #1f6fb2; } .POST { color: #1e5a3c; } .PUT { color: #c27c0e; } .DELETE { color: #c8102e; }
+  .ep { width: 330px; font-size: 11.4px; }
+  .acc { width: 108px; }
+  .b { color: #666; font-size: 9.4px; }
+  .tag { display: inline-block; font-size: 8.6px; font-weight: 700; color: #1e5a3c; border: 1px solid #1e5a3c; border-radius: 3px; padding: 0 3px; margin-left: 4px; vertical-align: 1px; }
+  .foot { margin-top: 8px; font-size: 10.5px; color: #555; }
+  @media print { .page { zoom: 0.75; } }     /* the whole table on one A4 page */
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Foodies — REST API Endpoints</h1>
+  <p class="sub">Web Programming 1 · Final version · Julien Matar, Peter Nehmeh, Freddy Rayess</p>
+
+  <div class="info">
+    <p><b>Base URL:</b> <code>http://localhost:4040/api</code> (online: <code>https://&lt;our-app&gt;/api</code>) · All requests and responses are JSON. The website in <code>view/</code> is served at the same address.</p>
+    <p><b>Status codes:</b> 200 OK, 201 Created, 204 Deleted, 400 invalid input, 401 not logged in, 403 not allowed, 404 not found, 409 conflict (already exists), 413 body too large, 429 too many requests, 503 feature not set up, 500 server error. Errors are always <code>{ "error": "message" }</code>.</p>
+    <p><b>Access:</b> Public = no login · User = logged in (JWT in the httpOnly cookie <code>token</code>) · Owner = the user who wrote the review · Admin = admin role (checked again in the database).</p>
+    <p><b>Rate limits per visitor:</b> all <code>/api</code> 600 / 15 min · register + login 10 / 15 min · chat 6 / min, and at most <code>CHAT_DAILY_LIMIT</code> (300) AI answers a day for the whole site.</p>
+    <p><b>Sort values</b> for <code>/restaurants?sort=</code>: <code>authentic</code>, <code>mix</code> (fusion first), <code>modern</code>, <code>price_asc</code>, <code>price_desc</code>, <code>top_rated</code>, <code>nearest</code> (needs <code>near</code>). <b>Styles:</b> <code>heritage</code>, <code>authentic</code>, <code>fusion</code>, <code>modern</code>. <b>Allergens:</b> <code>gluten</code>, <code>dairy</code>, <code>nuts</code>, <code>sesame</code>, <code>fish</code>, <code>eggs</code>. <b>Meat:</b> <code>none</code>, <code>lamb</code>, <code>beef</code>, <code>chicken</code>, <code>fish</code>.</p>
+  </div>
+
+  <table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Purpose / body</th></tr></thead>
+    <tbody>
+      <tr class="group"><td colspan="4">Auth (7)</td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/auth/register</td><td class="acc">Public, 10 / 15 min</td><td>Create an account and log in <span class="b">{ name, email, password 8-72 } · email saved in lowercase</span></td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/auth/login</td><td class="acc">Public, 10 / 15 min</td><td>Log in, sets the JWT cookie <span class="b">{ email, password }</span></td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/auth/logout</td><td class="acc">User</td><td>Clear the cookie <span class="b">answers 204</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/auth/me</td><td class="acc">User</td><td>The logged-in user</td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/auth/google/status</td><td class="acc">Public</td><td>Is Google sign-in set up on this server <span class="b">{ available }</span><span class="tag">NEW</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/auth/google</td><td class="acc">Public</td><td>Start Google sign-in <span class="b">needs GOOGLE_* in .env, 503 otherwise</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/auth/google/callback</td><td class="acc">Public</td><td>Finish Google sign-in <span class="b">checks the state cookie (CSRF)</span></td></tr>
+
+      <tr class="group"><td colspan="4">Dishes (5)</td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/dishes?search=&amp;category=&amp;vegetarian=&amp;vegan=&amp;<br>gluten_free=&amp;without=</td><td class="acc">Public</td><td>List / search dishes <span class="b">category = id · vegetarian = true|false · vegan, gluten_free = true · without = allergens, e.g. nuts,sesame</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/dishes/:id</td><td class="acc">Public</td><td>One dish (ingredients, diet, allergens) + the restaurants serving it and their prices</td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/dishes</td><td class="acc">Admin</td><td>Create a dish <span class="b">{ name_en, name_ar, description, category_id, is_vegetarian, weather } + optional { slug, ingredients[], is_vegan, is_gluten_free, allergens[], meat, served_raw, good_to_know, first_timer }</span></td></tr>
+      <tr><td class="m PUT">PUT</td><td class="ep">/api/dishes/:id</td><td class="acc">Admin</td><td>Replace a dish <span class="b">same body</span></td></tr>
+      <tr><td class="m DELETE">DELETE</td><td class="ep">/api/dishes/:id</td><td class="acc">Admin</td><td>Delete a dish <span class="b">its menu lines and favorites go too</span></td></tr>
+
+      <tr class="group"><td colspan="4">Restaurants (5)</td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/restaurants?dish=&amp;region=&amp;style=&amp;sort=&amp;near=</td><td class="acc">Public</td><td>Filter and sort restaurants, with average rating, tradition score and review count <span class="b">dish, region = ids · with dish= only the places where it is available, with its price_usd · near=lat,lng adds distance_km</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/restaurants/:id</td><td class="acc">Public</td><td>One restaurant + scores + menu with prices</td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/restaurants</td><td class="acc">Admin</td><td>Create <span class="b">{ name, region_id, address, phone, lat, lng, price_level 1-4, style } · lat and lng can both be null</span></td></tr>
+      <tr><td class="m PUT">PUT</td><td class="ep">/api/restaurants/:id</td><td class="acc">Admin</td><td>Replace a restaurant <span class="b">same body</span></td></tr>
+      <tr><td class="m DELETE">DELETE</td><td class="ep">/api/restaurants/:id</td><td class="acc">Admin</td><td>Delete a restaurant <span class="b">its menu and reviews go too</span></td></tr>
+
+      <tr class="group"><td colspan="4">Menu: which restaurant serves which dish (3)</td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/restaurants/:id/dishes</td><td class="acc">Admin</td><td>Put a dish on the menu <span class="b">{ dish_id, price_usd, available }</span></td></tr>
+      <tr><td class="m PUT">PUT</td><td class="ep">/api/restaurants/:id/dishes/:dishId</td><td class="acc">Admin</td><td>Change price or availability <span class="b">{ price_usd?, available? }</span></td></tr>
+      <tr><td class="m DELETE">DELETE</td><td class="ep">/api/restaurants/:id/dishes/:dishId</td><td class="acc">Admin</td><td>Take a dish off the menu</td></tr>
+
+      <tr class="group"><td colspan="4">Reviews (4)</td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/restaurants/:id/reviews</td><td class="acc">Public</td><td>Reviews of a restaurant, newest first, with the author's name</td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/restaurants/:id/reviews</td><td class="acc">User</td><td>Add a review (one per restaurant) <span class="b">{ rating 1-5, tradition_rating 1-5, comment }</span></td></tr>
+      <tr><td class="m PUT">PUT</td><td class="ep">/api/reviews/:id</td><td class="acc">Owner</td><td>Edit own review <span class="b">same body · sets updated_at</span></td></tr>
+      <tr><td class="m DELETE">DELETE</td><td class="ep">/api/reviews/:id</td><td class="acc">Owner or admin</td><td>Delete a review</td></tr>
+
+      <tr class="group"><td colspan="4">Favorites (3)</td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/favorites</td><td class="acc">User</td><td>My favorite dishes, the last one first</td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/favorites/:dishId</td><td class="acc">User</td><td>Add a favorite</td></tr>
+      <tr><td class="m DELETE">DELETE</td><td class="ep">/api/favorites/:dishId</td><td class="acc">User</td><td>Remove a favorite</td></tr>
+
+      <tr class="group"><td colspan="4">Lookups (2)</td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/regions</td><td class="acc">Public</td><td>List regions <span class="b">cached 1 hour</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/categories</td><td class="acc">Public</td><td>List dish categories <span class="b">cached 1 hour</span></td></tr>
+
+      <tr class="group"><td colspan="4">Utilities (3)</td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/dish-of-the-day</td><td class="acc">Public</td><td>A dish that suits today's weather in Beirut <span class="b">Open-Meteo; any dish if the weather service is down</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/rates</td><td class="acc">Public</td><td>1 USD in LBP and EUR <span class="b">cached 1 hour · estimated: true when the rates service is down</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/health</td><td class="acc">Public</td><td>The app and the database are up <span class="b">used by the host to check the deploy</span><span class="tag">NEW</span></td></tr>
+
+      <tr class="group new"><td colspan="4">Ask Teta: the chatbot (2) — built</td></tr>
+      <tr><td class="m POST">POST</td><td class="ep">/api/chat</td><td class="acc">Public, 6 / min</td><td>Ask Teta, get an answer + matching restaurants <span class="b">{ question, history? } → { answer, dish_id, results, source: "ai" | "rules" } · OpenAI with only our database as facts, built-in rules as fallback · saved in chat_logs</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/chat/status</td><td class="acc">Public</td><td>Does Teta use AI right now <span class="b">{ ai, model } · never the key</span><span class="tag">NEW</span></td></tr>
+
+      <tr class="group new"><td colspan="4">Admin dashboard (2)</td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/admin/stats</td><td class="acc">Admin</td><td>Counts, most saved dishes, most asked dishes, best rated places, questions per day (last 7)<span class="tag">NEW</span></td></tr>
+      <tr><td class="m GET">GET</td><td class="ep">/api/admin/chat-logs?page=&amp;limit=</td><td class="acc">Admin</td><td>The questions asked to Teta, newest first, by pages <span class="b">limit 1-100, 20 by default</span></td></tr>
+    </tbody>
+  </table>
+  <p class="foot">Total: 36 endpoints, all built and covered by the automated tests (<code>npm test</code>). <b>NEW</b> = added since the Stage 3 design.</p>
+</div>
+</body>
+</html>
