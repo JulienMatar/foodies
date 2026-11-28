@@ -42,7 +42,7 @@ Each of us pushes from our own GitHub account, through a branch and a pull reque
 | `npm start` | starts the server (`npm run dev` also restarts it when a file changes) |
 | `npm run db:setup` | creates the tables and the sample data |
 | `npm run set-admin` | sets the admin's email and password, typed in the terminal (see [Admin account](#admin-account)) |
-| `npm test` | runs the 78 automated tests |
+| `npm test` | runs the 85 automated tests |
 
 **Sample accounts, on your computer only** (from `db/seed.sql`):
 `admin@foodies.test / Admin123!` (admin), `maya@foodies.test / Password123!` and `tom@foodies.test / Password123!` (users).
@@ -58,7 +58,7 @@ A request goes through `app.js` → `routes/` → `middlewares/` (checks) → `c
 | `middlewares/` | security headers, rate limits, caching, login / admin checks, input validation, JSON errors |
 | `controller/` | reads the request, calls the module, picks the status code |
 | `modules/` | the SQL queries (`db.js` is the shared connection pool) |
-| `utils/` | `helper1` login cookie (JWT), `helper2` weather, `helper3` exchange rates, `helper4` Ask Teta with OpenAI, `helper5` Ask Teta without AI |
+| `utils/` | `helper1` login cookie (JWT), `helper2` weather (Open-Meteo, wttr.in as backup), `helper3` exchange rates, `helper4` Ask Teta with OpenAI, `helper5` Ask Teta without AI |
 | `db/` | `schema.sql` (9 tables), `seed.sql`, `setup.js`, `set-admin.js`, `foodies.dbml` (the ER diagram for https://dbdiagram.io) |
 | `view/` | the website: one HTML page and one script per page; shared code in `js/ui.js` and `js/api.js` |
 | `test/` | the automated tests |
@@ -124,9 +124,9 @@ The key stays on the server, and each visitor can ask 6 questions per minute, so
 
 ## Tests
 
-`npm test` runs 78 tests with Node's built-in test runner (nothing to install). They call every endpoint the way the website does:
+`npm test` runs 85 tests with Node's built-in test runner (nothing to install). They call every endpoint the way the website does:
 filters and sorting, accounts, the owner rules on reviews, admin actions, the dashboard, Ask Teta (with a fake OpenAI, so no key and no cost),
-the rate limits, the error answers, the security headers and `npm run set-admin`.
+the rate limits, the error answers, the security headers, the weather backup and `npm run set-admin`.
 
 Each test file creates its own empty database (`foodies_test_...`) and deletes it at the end, so the real `foodies` database is never touched.
 The tests refuse to run when `DATABASE_URL` is set, so they can't reach the live database by mistake.
