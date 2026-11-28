@@ -905,6 +905,8 @@ legend { padding: 0; margin-bottom: 10px; color: var(--ink-2); font-size: 13px; 
   .section-head > .chips { flex: 1 1 100%; min-width: 0; }
   .tags { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; }
   .trad-bar .chips { margin-left: 0; }
+  .trad-tools { width: 100%; min-width: 0; }
+  .trad-tools .chips { flex: 1 1 100%; min-width: 0; }   /* the sort chips scroll inside their row, not the whole page */
   .trad-row { grid-template-columns: 56px 1fr auto; gap: 14px 14px; }
   .trad-thumb { width: 56px; height: 56px; }
   .trad-row .meter { grid-column: 1 / -1; grid-row: 2; }

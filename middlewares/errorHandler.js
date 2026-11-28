@@ -7,6 +7,8 @@ const PG_ERRORS = {
   23503: { status: 400, message: 'A referenced id does not exist (check the ids you sent)' },
   23505: { status: 409, message: 'This record already exists (an email, slug or name is already used)' },
   23514: { status: 400, message: 'A value is out of the allowed range' },
+  22001: { status: 400, message: 'A text is too long for this field' },
+  22003: { status: 400, message: 'A number is too big for this field' },
 };
 
 function errorHandler(err, req, res, next) {

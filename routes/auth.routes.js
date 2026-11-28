@@ -12,6 +12,7 @@ router.post('/register', authLimit, validateRegister, authController.register);
 router.post('/login', authLimit, validateLogin, authController.login);
 router.post('/logout', requireUser, authController.logout);
 router.get('/me', requireUser, authController.me);
+router.get('/google/status', authController.googleStatus);
 router.get('/google', authController.googleStart);
 router.get('/google/callback', authController.googleCallback);
 
