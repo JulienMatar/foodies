@@ -11,7 +11,7 @@
 const OPENAI_URL = 'https://api.openai.com/v1/responses';
 
 const isOn = () => Boolean(process.env.OPENAI_API_KEY);
-const model = () => process.env.OPENAI_MODEL || 'gpt-5.6-terra';
+const model = () => process.env.OPENAI_MODEL || 'gpt-4.1-mini'; // small and cheap: about 4,000 answers for $5
 
 // the shape the answer must have. strict: true = the model can't add or forget a field
 const SCHEMA = {
