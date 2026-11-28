@@ -1,7 +1,7 @@
--- Sample data so the API has something to show while we build it.
--- Run this once, right after schema.sql.
--- The restaurants, prices and phone numbers are made-up examples,
--- to be replaced with real Lebanese restaurants later.
+-- Sample data so the API has something to show.
+-- Run this once, right after schema.sql (npm run db:setup runs both).
+-- The restaurants are real (names, addresses and contacts checked by Peter on 2026-11-27),
+-- but their menus and prices are made-up examples: the website says so on each restaurant page.
 
 INSERT INTO regions (name) VALUES
   ('Beirut'), ('Byblos'), ('Tripoli'), ('Saida'), ('Zahle'), ('Baalbek');          -- ids 1 to 6
@@ -100,16 +100,45 @@ VALUES
    FALSE, FALSE, FALSE, ARRAY['gluten'], 'lamb', FALSE,
    'Baked in the furn and ordered by the dozen. Squeeze lemon on top and eat them with yogurt or a cold drink.', FALSE);   -- ids 1 to 14
 
+-- Real restaurant names, addresses and publicly listed contacts checked 2026-11-27.
+-- Published phone numbers are not call-tested; Lakkis also lists reservation hotline 1661.
+-- Map pins are approximate; NULL means a location was not sufficiently verified.
+-- Price levels and styles are project classifications, not official ratings.
+-- Tawlet Mar Mikhael: https://www.soukeltayeb.com/tawlet
+-- Cross-check: https://joinpearl.co/restaurants/beirut/tawlet
+-- Map: https://opentravelguide.com/lebanon/beirut/restaurants/tawlet-mar-mikhael/
+-- Em Sherif Cafe: https://emsherif-cafe.com/
+-- Cross-check: https://www.waze.com/live-map/directions/lb/mount-lebanon-governorate/beirut/em-sherif-cafe?to=place.ChIJQSFs8ecWHxURvuGYlDezBqE
+-- Map: https://lebanon.worldplaces.me/review/94927567-em-sherif-cafe.html
+-- Liza Beirut: https://lizabeirut.com/
+-- Cross-check: https://www.sky-management.net/liza-beirut.html
+-- Map: https://www.yellowpages.net/phone-961-1208108-lebanese-restaurant-Beirut-LB81149.html
+-- Feniqia: https://staging.jbail-byblostourism.org/en/listing/Feneqia
+-- Cross-check: https://www.tripadvisor.com/Restaurant_Review-g298264-d2019823-Reviews-Feniqia-Byblos_Mount_Lebanon_Governorate.html
+-- Map: https://lebanon.worldplaces.me/lebanese-restaurants-in-byblos/22079758-feniqia.html
+-- Silver Shore Restaurant: https://guide.moovtoo.com/LB/en/food-drinks/detail/silver-shore-restaurant-17911
+-- Cross-check: https://www.indexoflebanon.com/directory/restaurants-in-lebanon/lebanon-company-in-tripoli_silver-shore.php
+-- Map: https://www.bizmideast.com/LB/silver-shore-restaurant-06-601-385
+-- Chahine Seafood Saida: https://chahineseafood.com/
+-- Cross-check: https://restaurantguru.com/Chahine-seafood-saida-Sidon
+-- Map: https://eatoutmap.com/en/lebanon/sidon/chahine-seafood-saida
+-- Mersal: https://mersalleb.com/contact-us/
+-- Cross-check: https://restaurantguru.com/MERSAL-Zahle
+-- Lakkis Farm Baalbek: https://www.lakkis.farm/fr/branches/baalbak
+-- Map: https://mapcarta.com/N6390245285
+-- Silver Shore: a more recent directory also lists +961 71 004 600; landline not call-tested.
 INSERT INTO restaurants (name, region_id, address, phone, lat, lng, price_level, style) VALUES
-  ('Teta''s Table',          1, 'Gemmayzeh, Beirut',        '01 000 001', 33.8959, 35.5164, 2, 'authentic'),
-  ('Cedar & Smoke',          1, 'Downtown, Beirut',         '01 000 002', 33.8966, 35.5035, 4, 'modern'),
-  ('Mezze Lab',              1, 'Mar Mikhael, Beirut',      '01 000 003', 33.8975, 35.5249, 3, 'fusion'),
-  ('Old Souk Kitchen',       2, 'Old Souk, Byblos',         '09 000 004', 34.1211, 35.6481, 2, 'heritage'),
-  ('Al Mina Fish House',     3, 'Al Mina, Tripoli',         '06 000 005', 34.4519, 35.8124, 3, 'authentic'),
-  ('Sea Castle Grill',       4, 'Old City, Saida',          '07 000 006', 33.5631, 35.3689, 2, 'fusion'),
-  ('Berdawni Riverside',     5, 'Berdawni, Zahle',          '08 000 007', 33.8547, 35.9020, 3, 'heritage'),
-  ('Temple Road Furn',       6, 'Near the temples, Baalbek', '08 000 008', 34.0047, 36.2110, 1, 'heritage');  -- ids 1 to 8
+  ('Tawlet Mar Mikhael', 1, 'Armenia Street, Mar Mikhael, Beirut', '+961 81 266 060', 33.8972, 35.5259, 2, 'authentic'),
+  ('Em Sherif Cafe', 1, 'Minet El Hosn, Downtown, Beirut', '+961 78 988 989', 33.89607, 35.50678, 4, 'modern'),
+  ('Liza Beirut', 1, 'Doumani Street, Trabaud, Achrafieh, Beirut', '+961 71 717 105', 33.889117, 35.512416, 4, 'modern'),
+  ('Feniqia', 2, 'Place de la Citadelle, Rue Pepe Abed, Byblos', '+961 9 540 444', 34.12088, 35.64592, 3, 'heritage'),
+  ('Silver Shore Restaurant', 3, 'El Mina, Tripoli', '+961 6 601 385', 34.454412, 35.809578, 3, 'authentic'),
+  ('Chahine Seafood Saida', 4, 'H97P+CXQ, Saida', '+961 3 885 022', 33.563587, 35.387484, 2, 'authentic'),
+  ('Mersal', 5, 'Boulevard Berdawni, across from Grand Kadri Hotel, Zahle', '+961 81 944 000', NULL, NULL, 3, 'fusion'),
+  ('Lakkis Farm Baalbek', 6, 'Douris Main Road, Baalbek', '+961 4 402 559', 33.9935, 36.17577, 2, 'heritage');  -- ids 1 to 8
 
+-- the menus below are examples to show how the menu table works,
+-- not the real menus or prices of these restaurants
 INSERT INTO restaurant_dishes (restaurant_id, dish_id, price_usd, available) VALUES
   (1, 1, 4.00, TRUE),  (1, 2, 5.00, TRUE),  (1, 5, 9.00, TRUE),  (1, 8, 8.00, TRUE),  (1, 12, 6.00, TRUE), (1, 13, 5.00, TRUE),
   (2, 1, 9.00, TRUE),  (2, 3, 11.00, TRUE), (2, 6, 18.00, TRUE), (2, 9, 10.00, TRUE),
@@ -130,15 +159,7 @@ INSERT INTO users (name, email, password_hash, role) VALUES
   ('Maya',  'maya@foodies.test',  '$2b$10$5hEF.7qpX9mRXb/LRxtDSeVR2CrUcd4VklcmyjCib..l6s/Dv7WTO', 'user'),
   ('Tom',   'tom@foodies.test',   '$2b$10$5hEF.7qpX9mRXb/LRxtDSeVR2CrUcd4VklcmyjCib..l6s/Dv7WTO', 'user');   -- ids 1 to 3
 
-INSERT INTO reviews (user_id, restaurant_id, rating, tradition_rating, comment) VALUES
-  (2, 1, 5, 5, 'Felt like eating at my grandmother''s house.'),
-  (3, 1, 4, 4, 'Great kibbeh nayeh, simple place.'),
-  (2, 2, 4, 2, 'Beautiful plating, very modern take.'),
-  (3, 3, 4, 3, 'Fun twists on classic mezze.'),
-  (2, 4, 5, 5, 'Old stone house, recipes unchanged.'),
-  (3, 5, 5, 4, 'Best sayadieh we had in Lebanon.'),
-  (2, 6, 3, 3, 'Good view, average food.'),
-  (3, 7, 5, 5, 'Classic Zahle mezze by the river.'),
-  (2, 8, 5, 5, 'Sfiha straight out of the oven, ten minutes from the temples.');
+-- no sample reviews: made-up reviews must not be written about real restaurants.
+-- log in with a test account and write some through the website.
 
 INSERT INTO favorites (user_id, dish_id) VALUES (2, 5), (2, 7), (3, 1);

@@ -13,7 +13,7 @@ Web Programming 1 project by Julien Matar, Peter Nehmeh and Freddy Rayess.
    ```
 2. In DBeaver (or psql), create a database named `foodies`, then run:
    - `db/schema.sql` -- creates the tables (**warning:** it drops them first, so it deletes all their data)
-   - `db/seed.sql` -- adds sample data
+   - `db/seed.sql` -- adds sample data: 14 dishes and 8 real restaurants (names, addresses and phones checked by Peter; the menus and prices are examples), no reviews yet
 3. Copy `.env.example` to `.env`, put your own PostgreSQL user and password in it, and set `JWT_SECRET` to any long random text.
    Google sign-in is optional: fill `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to turn it on.
    Ask Teta with AI is optional too: put an OpenAI key in `OPENAI_API_KEY`. Without it, Teta answers with her built-in rules.
