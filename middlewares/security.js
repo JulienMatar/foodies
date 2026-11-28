@@ -4,10 +4,11 @@
 // even if someone managed to put a <script> in a review, the browser would refuse to run it (XSS protection)
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' https://unpkg.com",                                       // our js/ files + Leaflet (the map)
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com", // inline style="--pos:..." on the meters
+  "script-src 'self'",                                                          // only our own js/ files
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",              // inline style="--pos:..." on the meters
   "font-src 'self' https://fonts.gstatic.com",
-  "img-src 'self' data: https://*.tile.openstreetmap.org",                    // map tiles
+  "img-src 'self' data:",
+  "frame-src https://maps.google.com https://www.google.com",                  // the only <iframe> we show: the Google map
   "connect-src 'self'",                                                         // fetch() can only call our own API
   "frame-ancestors 'none'",                                                     // nobody can show our site in an <iframe> (clickjacking)
   "base-uri 'self'",
