@@ -16,8 +16,9 @@ after(() => app.close());
 const NEW_ADMIN = { name: 'Julien', email: 'Owner@Example.com', password: 'a-long-private-passphrase' };
 
 test('weak or demo values are refused', () => {
-  assert.match(checkAdmin({ ...NEW_ADMIN, password: 'short' }), /12 characters/);
-  assert.match(checkAdmin({ ...NEW_ADMIN, password: 'Admin123!' }), /12 characters|public/);
+  assert.match(checkAdmin({ ...NEW_ADMIN, password: 'short' }), /8 characters/);
+  assert.equal(checkAdmin({ ...NEW_ADMIN, password: 'eight888' }), null, '8 characters is enough');
+  assert.match(checkAdmin({ ...NEW_ADMIN, password: 'Admin123!' }), /public/);
   assert.match(checkAdmin({ ...NEW_ADMIN, email: 'admin@foodies.test' }), /demo/);
   assert.match(checkAdmin({ ...NEW_ADMIN, email: 'not-an-email' }), /valid email/);
   assert.match(checkAdmin({ ...NEW_ADMIN, name: '  ' }), /name/);

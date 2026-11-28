@@ -159,7 +159,7 @@ The sample admin's password is public, so the live site needs its own. With `DAT
 npm run set-admin
 ```
 
-It asks for the admin's name, email and password (12 characters or more, shown as `*`), saves the password as a bcrypt hash,
+It asks for the admin's name, email and password (8 characters or more, shown as `*`), saves the password as a bcrypt hash,
 and deletes the sample admin `admin@foodies.test`: someone who signed in with it loses admin access at once.
 It can also delete the sample users maya and tom. Run it again any time to change the password.
 

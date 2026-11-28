@@ -29,7 +29,7 @@ function checkAdmin({ name, email, password }) {
   if (typeof name !== 'string' || name.trim() === '' || name.length > 100) return 'The name must be 1 to 100 characters';
   if (typeof email !== 'string' || !EMAIL.test(email) || email.length > 255) return 'That is not a valid email address';
   if (email.toLowerCase() === DEMO_ADMIN || DEMO_USERS.includes(email.toLowerCase())) return 'Use your own email, not a demo account';
-  if (typeof password !== 'string' || password.length < 12) return 'The password must be at least 12 characters';
+  if (typeof password !== 'string' || password.length < 8) return 'The password must be at least 8 characters';
   if (Buffer.byteLength(password) > 72) return 'The password must be 72 bytes at most (bcrypt ignores the rest)';
   if (['Admin123!', 'Password123!'].includes(password)) return 'That password is public in the README, choose another one';
   return null;
@@ -124,7 +124,7 @@ async function main() {
 
     const name = await ask(rl, nextLine, 'Admin name: ');
     const email = await ask(rl, nextLine, 'Admin email: ');
-    const password = await askHidden(rl, nextLine, 'Admin password (12+ characters): ');
+    const password = await askHidden(rl, nextLine, 'Admin password (8+ characters): ');
     const again = await askHidden(rl, nextLine, 'Same password again: ');
     if (password !== again) throw new Error('The two passwords are different. Nothing changed.');
     const problem = checkAdmin({ name, email, password });
