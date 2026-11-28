@@ -94,7 +94,8 @@ Access: Public = no login, User = logged in, Owner = the author of the review, A
 | POST | `/api/auth/login` | Public | log in `{ email, password }` |
 | POST | `/api/auth/logout` | User | clear the login cookie |
 | GET | `/api/auth/me` | User | the logged-in user |
-| GET | `/api/auth/google` | Public | start Google sign-in |
+| GET | `/api/auth/google/status` | Public | `{ available }`: is Google sign-in set up on this server |
+| GET | `/api/auth/google` | Public | start Google sign-in (503 when it is not set up) |
 | GET | `/api/auth/google/callback` | Public | Google sends the user back here |
 | GET | `/api/dishes?search=&category=&vegetarian=&vegan=&gluten_free=&without=` | Public | list / search dishes (`without=nuts,sesame` hides dishes with those allergens) |
 | GET | `/api/dishes/:id` | Public | one dish + the restaurants serving it and their prices |
@@ -103,7 +104,7 @@ Access: Public = no login, User = logged in, Owner = the author of the review, A
 | DELETE | `/api/dishes/:id` | Admin | delete a dish |
 | GET | `/api/restaurants?dish=&region=&style=&sort=&near=` | Public | filter and sort, with `avg_rating`, `tradition_score`, `review_count` (`near=33.89,35.50` adds `distance_km`) |
 | GET | `/api/restaurants/:id` | Public | one restaurant + scores + `menu` |
-| POST | `/api/restaurants` | Admin | create `{ name, region_id, address, phone, lat, lng, price_level, style }` |
+| POST | `/api/restaurants` | Admin | create `{ name, region_id, address, phone, lat, lng, price_level, style }` (`lat` and `lng` can both be `null` when the exact spot is not known) |
 | PUT | `/api/restaurants/:id` | Admin | replace a restaurant (same body) |
 | DELETE | `/api/restaurants/:id` | Admin | delete a restaurant |
 | POST | `/api/restaurants/:id/dishes` | Admin | put a dish on the menu `{ dish_id, price_usd, available }` |
@@ -174,6 +175,20 @@ The key never leaves the server, and `/api/chat` is limited to 6 questions per m
 | Exchange rates | 1 hour in the server's memory (old or estimated rates if the service is down) | `utils/helper3.js` |
 | Teta's catalog | 5 minutes in the server's memory, cleared when an admin changes a dish, restaurant or menu | `modules/chat.module.js` |
 | Lists inside a page | each list fetched once per page | `view/js/api.js` |
+
+## Tests
+
+```bash
+npm test
+```
+
+68 automated tests (`test/`, with Node's built-in test runner: nothing to install) call every endpoint the way the website does:
+public lists and filters, sign-in and accounts, reviews and favorites with the owner rules, admin dishes / restaurants / menus,
+the dashboard, Ask Teta, the rate limits, the error answers and the security headers.
+
+Each test file creates its own empty database (`foodies_test_...`) with `schema.sql` and `seed.sql`, and deletes it at the end,
+so the tests never touch the real `foodies` database. They only need PostgreSQL running and the `PG...` values of `.env`.
+They refuse to run when `DATABASE_URL` is set, so they can't reach the hosted database by mistake.
 
 ## Deployment (Render + Neon)
 

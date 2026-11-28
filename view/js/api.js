@@ -121,12 +121,11 @@ export const login = (email, password) => send('POST', '/auth/login', { email, p
 export const register = (name, email, password) => send('POST', '/auth/register', { name, email, password });
 export const logout = () => send('POST', '/auth/logout');
 
-// true if the server has Google sign-in set up: it then answers with a redirect to Google
-// instead of an error (redirect: 'manual' stops the browser from following it)
+// true if the server has Google sign-in set up (GET /api/auth/google/status)
 export async function googleAvailable() {
   try {
-    const res = await fetch('/api/auth/google', { redirect: 'manual' });
-    return res.type === 'opaqueredirect';
+    const res = await fetch('/api/auth/google/status');
+    return res.ok && (await res.json()).available === true;
   } catch {
     return false;
   }

@@ -66,10 +66,16 @@ function googleConfigured() {
   return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REDIRECT_URI);
 }
 
+// GET /api/auth/google/status -- { available }: the sign-in window shows the Google button only when it works
+function googleStatus(req, res) {
+  res.json({ available: googleConfigured() });
+}
+
 // GET /api/auth/google
 function googleStart(req, res) {
   if (!googleConfigured()) {
-    return res.status(500).json({ error: 'Google sign-in is not set up on this server (see GOOGLE_CLIENT_ID in .env)' });
+    // 503 Service Unavailable: the feature is off on this server (not a bug, so not a 500)
+    return res.status(503).json({ error: 'Google sign-in is not set up on this server (see GOOGLE_CLIENT_ID in .env)' });
   }
 
   // a random "state" saved in a cookie and sent to Google: when Google comes back with the same value,
@@ -90,7 +96,8 @@ function googleStart(req, res) {
 // GET /api/auth/google/callback
 async function googleCallback(req, res) {
   if (!googleConfigured()) {
-    return res.status(500).json({ error: 'Google sign-in is not set up on this server (see GOOGLE_CLIENT_ID in .env)' });
+    // 503 Service Unavailable: the feature is off on this server (not a bug, so not a 500)
+    return res.status(503).json({ error: 'Google sign-in is not set up on this server (see GOOGLE_CLIENT_ID in .env)' });
   }
 
   const { code, state } = req.query;
@@ -142,4 +149,4 @@ async function googleCallback(req, res) {
   res.redirect('/'); // back to the home page, now logged in
 }
 
-module.exports = { register, login, logout, me, googleStart, googleCallback };
+module.exports = { register, login, logout, me, googleStatus, googleStart, googleCallback };

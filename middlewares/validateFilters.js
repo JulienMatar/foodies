@@ -9,7 +9,8 @@ const ALLERGENS = ['gluten', 'dairy', 'nuts', 'sesame', 'fish', 'eggs'];
 
 // '' and undefined both mean "no filter"
 const given = (v) => v !== undefined && v !== '';
-const toId = (v) => (/^\d+$/.test(v) && Number(v) > 0 ? Number(v) : null);
+// a positive whole number that fits in an INTEGER column (2147483647 max), or null
+const toId = (v) => (/^\d+$/.test(v) && Number(v) > 0 && Number(v) <= 2147483647 ? Number(v) : null);
 
 function validateDishFilters(req, res, next) {
   const { search, category, vegetarian, vegan, gluten_free: glutenFree, without } = req.query;
