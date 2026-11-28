@@ -5,6 +5,18 @@ REST API built with Node.js, Express 5 and PostgreSQL.
 
 Web Programming 1 project by Julien Matar, Peter Nehmeh and Freddy Rayess.
 
+## Team
+
+Each of us pushes from our own GitHub account, through a branch and a pull request, so GitHub keeps who did what.
+
+| Member | GitHub | Commits | Pull requests |
+|---|---|---|---|
+| Julien Matar | [@JulienMatar](https://github.com/JulienMatar) | [commits](https://github.com/JulienMatar/foodies/commits?author=JulienMatar) | [pull requests](https://github.com/JulienMatar/foodies/pulls?q=is%3Apr+author%3AJulienMatar) |
+| Peter Nehmeh | [@PeterNehme-git](https://github.com/PeterNehme-git) | [commits](https://github.com/JulienMatar/foodies/commits?author=PeterNehme-git) | [pull requests](https://github.com/JulienMatar/foodies/pulls?q=is%3Apr+author%3APeterNehme-git) |
+| Freddy Rayess | [@fredyrayess](https://github.com/fredyrayess) | [commits](https://github.com/JulienMatar/foodies/commits?author=fredyrayess) | [pull requests](https://github.com/JulienMatar/foodies/pulls?q=is%3Apr+author%3Afredyrayess) |
+
+The whole history per person: [Insights → Contributors](https://github.com/JulienMatar/foodies/graphs/contributors).
+
 ## Setup
 
 1. Install the dependencies:
