@@ -41,17 +41,21 @@ export function icon(name, className = 'icon') {
 // dishes and cities are real photographs in img/photos/, credited in credits.js.
 // a dish added later without a photo shows a plain "no photo yet" box.
 
+// browsers keep photos 7 days (see app.js). When you replace a photo with one of the same name,
+// change this date: the address changes (?v=...), so every browser downloads the new photo at once.
+const PHOTO_VERSION = '2026-11-28';
+
 export function dishImg(dish, className = 'dish-img') {
   const photo = dish.slug && DISH_PHOTOS[dish.slug];
   if (!photo) return `<span class="no-photo ${className}">No photo yet</span>`;
-  return `<img class="${className}" src="img/photos/dishes/${photo.file}" alt="Photo of ${esc(dish.name_en)}" loading="lazy" width="1200" height="900">`;
+  return `<img class="${className}" src="img/photos/dishes/${photo.file}?v=${PHOTO_VERSION}" alt="Photo of ${esc(dish.name_en)}" loading="lazy" width="1200" height="900">`;
 }
 
 // the photo of a city, or nothing if we have none
 export function cityImg(slug, alt, className = 'city-img') {
   const photo = slug && CITY_PHOTOS[slug];
   if (!photo) return '';
-  return `<img class="${className}" src="img/photos/cities/${photo.file}" alt="${esc(alt)}" loading="lazy" width="1200" height="900">`;
+  return `<img class="${className}" src="img/photos/cities/${photo.file}?v=${PHOTO_VERSION}" alt="${esc(alt)}" loading="lazy" width="1200" height="900">`;
 }
 
 // "Photo: author, license" under a picture (most free licenses ask for it)
