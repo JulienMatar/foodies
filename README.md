@@ -151,8 +151,10 @@ and the database design in `project_design/Foodies_ER_Diagram.pdf` (it matches `
 1. The page sends `POST /api/chat { question, history }` (history = the last 6 messages, so Teta follows the conversation).
 2. The server loads the catalog: every dish, restaurant, menu and price (`modules/chat.module.js`, kept 5 minutes in memory).
 3. With an `OPENAI_API_KEY`, `utils/helper4.js` sends Teta's rules + the catalog + the question to the OpenAI Responses API,
-   and asks for JSON that follows a schema (`{ answer, dish_id, picks }`). The model can only recommend what is in our database;
-   ids it makes up are thrown away by the controller.
+   and asks for JSON that follows a schema (`{ answer, dish_id, picks }`). The model gets no web search or other tools:
+   our database is its only source of facts. Teta's rules forbid adding anything from the model's own knowledge
+   (history, recipes, opening hours, other places...); when the answer is not in our data she says she doesn't know yet.
+   Ids it makes up are thrown away by the controller, and prices always come from our database.
 4. Without a key, if OpenAI is down, or after `CHAT_DAILY_LIMIT` AI answers in a day, `utils/helper5.js` answers with rules
    (dish names, categories, diets, allergies, weather, regions). The chatbot always answers.
 5. The question and answer are saved in `chat_logs`; admins read them on `admin.html`.
@@ -194,9 +196,10 @@ The key never leaves the server, and `/api/chat` is limited to 6 questions per m
 npm test
 ```
 
-68 automated tests (`test/`, with Node's built-in test runner: nothing to install) call every endpoint the way the website does:
+74 automated tests (`test/`, with Node's built-in test runner: nothing to install) call every endpoint the way the website does:
 public lists and filters, sign-in and accounts, reviews and favorites with the owner rules, admin dishes / restaurants / menus,
 the dashboard, Ask Teta, the rate limits, the error answers and the security headers.
+`test/ai.test.js` checks Ask Teta with the AI using a fake OpenAI (no key, no cost): what we send, and what we keep from the answer.
 
 Each test file creates its own empty database (`foodies_test_...`) with `schema.sql` and `seed.sql`, and deletes it at the end,
 so the tests never touch the real `foodies` database. They only need PostgreSQL running and the `PG...` values of `.env`.
