@@ -652,6 +652,8 @@ select {
 .rest-info .lead a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2); }
 .rest-info .lead a:hover { text-decoration-color: var(--red); }
 .rest-info .btn { margin-top: 24px; }
+.rest-map { margin: 20px 0 0; }
+.rest-map .map { height: 300px; }
 .rest-story { margin-top: 18px; padding-left: 16px; border-left: 4px solid var(--red); color: var(--ink-2); font-size: 15px; max-width: 60ch; }
 
 .score-card { display: flex; flex-direction: column; gap: 24px; padding: 30px; background: var(--cedar); color: #fff; border-radius: var(--r-lg); box-shadow: var(--shadow); }
@@ -771,15 +773,15 @@ legend { padding: 0; margin-bottom: 10px; color: var(--ink-2); font-size: 13px; 
 .trad-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .map-fig { margin: 0 0 28px; }
 .map-fig .mount { padding: 14px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--mount-shadow); }
-.map { height: 380px; border: 1px solid var(--line-2); background: var(--paper-2); z-index: 0; }
-.map .leaflet-tile-pane { filter: sepia(.35) saturate(.85); }   /* the tiles take the colour of the old paper */
-.map .leaflet-popup-content { font-family: var(--font-body); }
-.map .leaflet-popup-content strong { font: 700 18px/1.2 var(--font-head); }
-.map-pin { display: block; width: 18px; height: 18px; border-radius: 50%; background: var(--red); border: 3px solid var(--card); box-shadow: 0 0 0 1.5px var(--red); }
-.map-pin.authentic { background: var(--cedar); box-shadow: 0 0 0 1.5px var(--cedar); }
-.map-pin.fusion { background: var(--gold-2); box-shadow: 0 0 0 1.5px var(--gold-2); }
-.map-pin.modern { background: var(--ink-2); box-shadow: 0 0 0 1.5px var(--ink-2); }
-.map-pin.me { background: #2B6CB0; box-shadow: 0 0 0 6px rgba(43, 108, 176, .25); }
+.map { display: block; width: 100%; height: 380px; border: 1px solid var(--line-2); background: var(--paper-2); filter: sepia(.25) saturate(.9); }   /* the Google map takes a little of the old paper's colour */
+.map-caption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; margin-top: 8px; }
+.map-caption .map-go { color: var(--red); font-weight: 700; text-decoration: none; }
+.map-caption .map-go:hover { text-decoration: underline; }
+.trad-links { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 8px; font-size: 14px; font-weight: 600; }
+.trad-links a, .trad-links .link-btn { display: inline-flex; align-items: center; gap: 5px; color: var(--cedar-2); background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
+.trad-links a:hover, .trad-links .link-btn:hover { color: var(--red); }
+.trad-row.on-map h3 a { color: var(--red); }
+.trad-row.on-map .link-btn { color: var(--red); }
 .distance { color: var(--cedar-2); font-weight: 700; }
 
 /* ---------- admin: the kitchen ledger ---------- */

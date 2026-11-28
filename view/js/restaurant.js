@@ -7,6 +7,7 @@ import { CITIES } from './heritage.js';
 import {
   initNav, initCurrency, toast, reveal, getUser, openSignIn,
   esc, icon, price, priceLevel, styleBadge, stars, traditionPos, dishImg, cityImg, arabic, photoCredit,
+  directionsUrl, mapEmbedUrl,
 } from './ui.js';
 
 const $ = (id) => document.getElementById(id);
@@ -49,7 +50,6 @@ function renderHero(r) {
   const rating = r.avg_rating ?? 0;
   const tradition = r.tradition_score;
   const count = r.review_count;
-  const map = r.lat != null ? `https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=17/${r.lat}/${r.lng}` : null;
   const city = CITIES[r.region];
 
   // the drawing of the restaurant's city on top of the page
@@ -74,7 +74,12 @@ function renderHero(r) {
       <h1>${esc(r.name)}</h1>
       <p class="lead">${esc(r.address || r.region)}${r.phone ? ` · <a href="tel:${esc(r.phone.replace(/\s/g, ''))}">${esc(r.phone)}</a>` : ''}</p>
       ${city ? `<p class="rest-story">${esc(city.story)}</p>` : ''}
-      ${map ? `<a class="btn btn-ghost" href="${map}" target="_blank" rel="noopener">${icon('pin')}See it on the map</a>` : ''}
+      <a class="btn btn-primary" href="${esc(directionsUrl(r))}" target="_blank" rel="noopener">${icon('pin')}Get directions</a>
+      <!-- Google map with a pin on the restaurant (its lat,lng from the database) -->
+      <figure class="map-fig rest-map">
+        <div class="mount"><iframe class="map" src="${esc(mapEmbedUrl(r))}" title="Google map: where ${esc(r.name)} is" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+        ${r.lat == null ? '<figcaption class="credit">We do not have the exact spot yet: the map searches the address.</figcaption>' : ''}
+      </figure>
     </div>
     <aside class="score-card" aria-label="Scores from diners">
       <div class="score-top">

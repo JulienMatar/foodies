@@ -10,9 +10,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&family=Aref+Ruqaa:wght@700&display=swap">
-  <!-- Leaflet draws the map (tiles from OpenStreetMap). integrity = the browser refuses the file if unpkg ever changes it -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <link rel="stylesheet" href="css/styles.css">
   <script type="module" src="js/restaurants.js"></script>
 </head>
@@ -75,8 +72,9 @@
         </div>
       </div>
       <figure class="map-fig">
-        <div class="mount"><div class="map" id="map" role="region" aria-label="Map of the restaurants"></div></div>
-        <figcaption class="credit">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Pins: red heritage, green authentic, gold fusion, grey modern.</figcaption>
+        <!-- a Google map with a pin on one restaurant: "Show on map" on a restaurant changes it (src is set by restaurants.js) -->
+        <div class="mount"><iframe class="map" id="map" title="Google map of the restaurant" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+        <figcaption class="credit map-caption"><span id="mapCaption">Loading the map…</span> <a class="map-go" id="mapDirections" href="#" target="_blank" rel="noopener" hidden>Get directions →</a></figcaption>
       </figure>
       <div class="trad-list" id="tradList" aria-busy="true">
         <div class="trad-skel" aria-hidden="true"><div class="skel"></div></div>

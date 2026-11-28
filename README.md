@@ -13,7 +13,7 @@ Web Programming 1 project by Julien Matar, Peter Nehmeh and Freddy Rayess.
    ```
 2. In DBeaver (or psql), create a database named `foodies`, then run:
    - `db/schema.sql` -- creates the tables (**warning:** it drops them first, so it deletes all their data)
-   - `db/seed.sql` -- adds sample data
+   - `db/seed.sql` -- adds sample data: 14 dishes and 8 real restaurants (names, addresses and phones checked by Peter; the menus and prices are examples), no reviews yet
 3. Copy `.env.example` to `.env`, put your own PostgreSQL user and password in it, and set `JWT_SECRET` to any long random text.
    Google sign-in is optional: fill `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to turn it on.
    Ask Teta with AI is optional too: put an OpenAI key in `OPENAI_API_KEY`. Without it, Teta answers with her built-in rules.
@@ -48,10 +48,10 @@ Each part of the site is its own page; the top bar links them all and marks the 
 | `new.html` | `new.js` | "New to Lebanese food?": the first dishes to try, how to eat a mezze, words for the table, the diet labels |
 | `dishes.html` | `dishes.js` | every dish, with search, region, category and diet filters |
 | `road.html` | `road.js` | the food road trip: six stops and what to order, then the six cities with photos |
-| `restaurants.html?region=` | `restaurants.js` | the tradition meter: every restaurant from very modern to pure heritage (`?region=` shows one city), a map of them (Leaflet + OpenStreetMap), and "Near me" to sort them by distance |
+| `restaurants.html?region=` | `restaurants.js` | the tradition meter: every restaurant from very modern to pure heritage (`?region=` shows one city), a Google map ("Show on map" puts the pin on a restaurant from its lat/lng, "Directions" opens the route in Google Maps), and "Near me" to sort them by distance |
 | `traditions.html` | `traditions.js` | Lebanese food traditions |
 | `dish.html?id=` | `dish.js` | one dish: photo, ingredients, diet and allergy table, tips, the restaurants serving it; the heart saves it to your favorites (needs a login) |
-| `restaurant.html?id=` | `restaurant.js` | one restaurant: its city photo and story, scores, menu with prices, reviews; logged-in users write, edit and delete their review, admins can delete any |
+| `restaurant.html?id=` | `restaurant.js` | one restaurant: its city photo and story, a Google map with a "Get directions" button, scores, menu with prices, reviews; logged-in users write, edit and delete their review, admins can delete any |
 | `favorites.html` | `favorites.js` | the dishes you saved |
 | `chat.html?q=` | `chat.js` | Ask Teta: the chatbot. It remembers the conversation, and links each answer to the dishes and restaurants |
 | `admin.html` | `admin.js` | admins only: the numbers of the site, the most saved dishes, the best places, the questions asked to Teta (the chart icon in the top bar) |
@@ -153,7 +153,7 @@ The key never leaves the server, and `/api/chat` is limited to 6 questions per m
 | SQL injection | every value goes in `$1, $2...` placeholders, never in the SQL text; sort orders come from a fixed list | `modules/` |
 | Stolen passwords | bcrypt hashes (cost 10), never the password; the same message for a wrong email and a wrong password | `auth.controller.js` |
 | Password guessing | 10 login / register tries per 15 minutes per IP | `middlewares/rateLimit.js` |
-| XSS | the login token is in an httpOnly cookie (JavaScript can't read it); the pages escape database text (`esc()`, `textContent`); a Content-Security-Policy only allows our own scripts (+ Leaflet, checked with `integrity`) | `helper1.js`, `ui.js`, `security.js` |
+| XSS | the login token is in an httpOnly cookie (JavaScript can't read it); the pages escape database text (`esc()`, `textContent`); a Content-Security-Policy only allows our own scripts, and only Google Maps in an `<iframe>` | `helper1.js`, `ui.js`, `security.js` |
 | CSRF | `sameSite: 'lax'` cookie, JSON-only API, `state` check on Google sign-in | `helper1.js`, `auth.controller.js` |
 | Clickjacking | `frame-ancestors 'none'` and `X-Frame-Options: DENY` | `security.js` |
 | Too much access | `requireUser` (401), `requireAdmin` (403, re-reads the role in the database), owner checks on reviews | `middlewares/auth.js` |

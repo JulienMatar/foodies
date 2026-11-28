@@ -123,6 +123,29 @@ export function stars(rating) {
 // tradition score 1 (very modern) .. 5 (very traditional) as a 0-100% position
 export const traditionPos = (score) => ((score - 1) / 4) * 100;
 
+// ---------- Google Maps ----------
+// these are Google's public "Maps URLs": they need no API key and no account.
+
+// where the restaurant is: its lat,lng from the database,
+// or its name and address when we don't have the exact spot (lat is null)
+function mapPlace(r) {
+  return r.lat != null ? `${r.lat},${r.lng}` : `${r.name}, ${r.address || r.region}, Lebanon`;
+}
+
+// opens Google Maps with the route to the restaurant (on a phone: the Google Maps app).
+// without "from", Google starts the route from where the visitor is right now.
+export function directionsUrl(r, from = null) {
+  const params = new URLSearchParams({ api: '1', destination: mapPlace(r) });
+  if (from) params.set('origin', `${from.lat},${from.lng}`);
+  return `https://www.google.com/maps/dir/?${params}`;
+}
+
+// the Google map shown inside our pages, in an <iframe>, with a pin on the restaurant
+export function mapEmbedUrl(r) {
+  const params = new URLSearchParams({ q: mapPlace(r), z: r.lat != null ? '16' : '14', output: 'embed' });
+  return `https://maps.google.com/maps?${params}`;
+}
+
 // ---------- the menu (which restaurant serves which dish) ----------
 
 // the cheapest price of a dish among the places that have it today, or null

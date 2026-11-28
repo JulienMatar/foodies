@@ -14,7 +14,9 @@ CREATE TABLE users (
   google_id     VARCHAR(255) UNIQUE,                  -- null unless the user signed in with Google
   role          VARCHAR(10)  NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
   created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-  CHECK (password_hash IS NOT NULL OR google_id IS NOT NULL)   -- every account needs a way to log in
+  CONSTRAINT users_login_method_check CHECK (password_hash IS NOT NULL OR google_id IS NOT NULL),   -- every account needs a way to log in
+  CONSTRAINT users_email_lowercase_check CHECK (email = LOWER(email)),   -- the database refuses "Maya@X.com", so the same email can't exist twice
+  CONSTRAINT users_name_not_blank CHECK (BTRIM(name) <> '')              -- BTRIM removes the spaces: "   " is not a name
 );
 
 -- ---------- lookups ----------
@@ -72,7 +74,7 @@ CREATE TABLE dishes (
 CREATE TABLE restaurant_dishes (
   restaurant_id INTEGER NOT NULL REFERENCES restaurants(id) ON DELETE CASCADE,
   dish_id       INTEGER NOT NULL REFERENCES dishes(id) ON DELETE CASCADE,
-  price_usd     NUMERIC(8, 2) NOT NULL CHECK (price_usd >= 0),
+  price_usd     NUMERIC(8, 2) NOT NULL CHECK (price_usd >= 0 AND price_usd < 1000000),   -- NUMERIC(8, 2) holds at most 999999.99
   available     BOOLEAN NOT NULL DEFAULT TRUE,
   PRIMARY KEY (restaurant_id, dish_id)               -- a dish is on a menu only once
 );
@@ -115,6 +117,9 @@ CREATE TABLE chat_logs (
 CREATE INDEX idx_restaurants_region ON restaurants(region_id);
 CREATE INDEX idx_dishes_category ON dishes(category_id);
 CREATE INDEX idx_restaurant_dishes_dish ON restaurant_dishes(dish_id);
-CREATE INDEX idx_reviews_restaurant ON reviews(restaurant_id);
+CREATE INDEX idx_reviews_restaurant ON reviews(restaurant_id, created_at DESC, id DESC);   -- a restaurant's reviews, newest first
 CREATE INDEX idx_favorites_dish ON favorites(dish_id);
-CREATE INDEX idx_chat_logs_created ON chat_logs(created_at);
+CREATE INDEX idx_favorites_user_created ON favorites(user_id, created_at DESC);           -- "my favorites", newest first
+CREATE INDEX idx_chat_logs_created ON chat_logs(created_at DESC, id DESC);                -- admin chat logs, newest first
+CREATE INDEX idx_chat_logs_user ON chat_logs(user_id);
+CREATE INDEX idx_chat_logs_dish ON chat_logs(matched_dish_id);

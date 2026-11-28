@@ -18,7 +18,7 @@ Table users {
   role          varchar(10)  [not null, default: 'user', note: "'user' or 'admin'"]
   created_at    timestamptz  [not null, default: `now()`]
 
-  Note: 'Every account needs a password_hash or a google_id (CHECK constraint).'
+  Note: 'CHECK constraints: every account needs a password_hash or a google_id; email is lowercase; name is not blank.'
 }
 
 // ---------- lookups ----------
@@ -77,7 +77,7 @@ Table dishes {
 Table restaurant_dishes {
   restaurant_id integer       [not null]
   dish_id       integer       [not null]
-  price_usd     numeric(8, 2) [not null, note: '0 or more']
+  price_usd     numeric(8, 2) [not null, note: '0 to 999999.99']
   available     boolean       [not null, default: true]
 
   indexes {
@@ -102,7 +102,7 @@ Table reviews {
 
   indexes {
     (user_id, restaurant_id) [unique, note: 'one review per user per restaurant']
-    restaurant_id [name: 'idx_reviews_restaurant']
+    (restaurant_id, created_at, id) [name: 'idx_reviews_restaurant', note: 'newest first']
   }
 }
 
@@ -114,6 +114,7 @@ Table favorites {
   indexes {
     (user_id, dish_id) [pk]
     dish_id [name: 'idx_favorites_dish']
+    (user_id, created_at) [name: 'idx_favorites_user_created', note: 'newest first']
   }
 
   Note: 'The dishes a user saved (many-to-many).'
@@ -130,7 +131,9 @@ Table chat_logs {
   created_at      timestamptz  [not null, default: `now()`]
 
   indexes {
-    created_at [name: 'idx_chat_logs_created']
+    (created_at, id) [name: 'idx_chat_logs_created', note: 'newest first']
+    user_id [name: 'idx_chat_logs_user']
+    matched_dish_id [name: 'idx_chat_logs_dish']
   }
 }
 
