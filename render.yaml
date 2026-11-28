@@ -20,7 +20,7 @@ services:
       - key: OPENAI_API_KEY
         sync: false                  # typed by hand in the dashboard, never in git
       - key: OPENAI_MODEL
-        sync: false
+        value: gpt-4.1-mini          # small and cheap; tested with our data
       - key: CHAT_DAILY_LIMIT
         value: "300"
       - key: GOOGLE_CLIENT_ID

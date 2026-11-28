@@ -210,6 +210,8 @@ They refuse to run when `DATABASE_URL` is set, so they can't reach the hosted da
 The app runs on Render (a normal Node server, like on our computers) and the database on Neon (free PostgreSQL that doesn't expire).
 
 1. On https://neon.tech, create a project (region: Europe, close to Lebanon) and copy its connection string (`postgresql://...`).
+   In that string, change `sslmode=require` to `sslmode=verify-full`: same encryption, but without a "SECURITY WARNING" in the logs
+   (the `pg` package already treats `require` as `verify-full`). Use this edited string everywhere below.
 2. Create the tables and the sample data in Neon, from our computer (PowerShell, in the project folder):
    ```powershell
    $env:DATABASE_URL="postgresql://..."; npm run db:setup
@@ -224,3 +226,22 @@ The app runs on Render (a normal Node server, like on our computers) and the dat
 The free Render plan sleeps after 15 minutes without visits: the first visit after that takes about a minute. Open the site a bit before a demo.
 In production (`NODE_ENV=production`) the cookies are https-only, HSTS is on, and Express trusts Render's proxy so the rate limits see each visitor's real IP.
 Any host that runs Node 20.12+ works the same way: set the variables of `.env.example` (with `DATABASE_URL`), run `npm ci` then `npm start`.
+
+### Already tested before deploying
+
+A deployment rehearsal on our computers, on a fresh copy cloned from GitHub (like Render gets it):
+- every file the site uses is in git with exactly the same capitals (Render runs Linux, where `Hummus.jpg` and `hummus.jpg` are different files)
+- `npm ci` installs from `package-lock.json`, and the 74 tests pass with no `.env` file
+- `npm run db:setup` and the server work through `DATABASE_URL` alone, in production mode
+- behind a proxy (`X-Forwarded-For`), the sign-in limit blocks one visitor without blocking the others
+- production answers: HSTS, `Secure` + `HttpOnly` login cookie, `/api/health` = 200
+
+### Check right after deploying (only possible online)
+
+1. Render's **Logs** say `Connected to PostgreSQL` and `Foodies API running`, with no error. The deploy is "Live".
+2. `https://<your-app>.onrender.com/api/health` answers `{"status":"ok","database":"ok"}`.
+3. `/api/chat/status` answers `"ai": true` (the OpenAI key was typed in Render), then ask Teta one question.
+4. Sign in as `maya@foodies.test`: the login stays after a reload (the `Secure` cookie needs https, which Render gives).
+5. Open the site on a phone: the map, "Directions", "Near me" (needs https too) and the menu work.
+6. If Google sign-in is used: the same `GOOGLE_REDIRECT_URI` is in Render and in the Google console.
+7. Before a demo, open the site a minute early: the free Render plan and Neon both sleep when nobody visits.
